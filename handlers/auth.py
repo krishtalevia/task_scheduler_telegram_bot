@@ -22,3 +22,13 @@ async def start_handler(message: types.Message, state: FSMContext):
     else:
         await state.set_state(AuthStates.waiting_for_username)
         await message.answer('Введите имя пользователя для регистрации:')
+
+@router.message(StateFilter(AuthStates.waiting_for_username))
+async def register_username(message: types.Message, state: FSMContext):
+    username = message.text
+    telegram_id = message.from_user.id
+    if db_manager.register_user(telegram_id, username):
+        await message.answer('Вы успешно зарегистрировались.')
+        await state.set_state(AuthStates.registered)
+    else:
+        await message.answer('Произошла ошибка при попытке регистрации. Попробуйте снова')
