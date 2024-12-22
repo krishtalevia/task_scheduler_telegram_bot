@@ -55,7 +55,7 @@ class Task:
     
     @property
     def priority(self):
-        return self.priority
+        return self._priority
     
     def __str__(self):
         task_info = f'Задача "{self._title}": {self._description} (приоритет: {self._priority}, выполнить до: {self._deadline}).'
@@ -71,8 +71,12 @@ class DatabaseManager:
             self.cursor.execute('INSERT INTO users (telegram_id, username) VALUES (?, ?)', (telegram_id, username))
             self.connection.commit()
             return True
-        except:
+        except Exception:
             return False
+        
+    def get_user(self, telegram_id):
+        self.cursor.execute('SELECT FROM users WHERE telegram_id = ?', (telegram_id))
+        return self.cursor.fetchone()
 
     def add_task(self, user_id, title, description, deadline, priority, completed=False):
         if priority not in ['низкая', 'средняя', 'высокая']:
