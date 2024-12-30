@@ -7,3 +7,5 @@ from model import DatabaseManager
 
 router = Router()
 db_manager = DatabaseManager()
+
+@router.message(StateFilter(None), Command('add_task'))
