@@ -7,7 +7,6 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
             telegram_id     INTEGER UNIQUE,
-            username        TEXT
         );
     ''')
     cursor.execute('''
@@ -66,9 +65,9 @@ class DatabaseManager:
         self.connection = sqlite3.connect(db_name)
         self.cursor = self.connection.cursor()
 
-    def register_user(self, telegram_id, username):
+    def register_user(self, telegram_id):
         try:
-            self.cursor.execute('INSERT INTO users (telegram_id, username) VALUES (?, ?)', (telegram_id, username))
+            self.cursor.execute('INSERT INTO users (telegram_id) VALUES (?)', (telegram_id))
             self.connection.commit()
             return True
         except Exception:
