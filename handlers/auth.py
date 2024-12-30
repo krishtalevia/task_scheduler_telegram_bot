@@ -1,4 +1,4 @@
-from aiogram import Router, F, types
+from aiogram import Router, types
 from aiogram.filters import StateFilter, Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -24,7 +24,7 @@ async def start_handler(message: types.Message, state: FSMContext):
         await message.answer('Введите имя пользователя для регистрации:')
 
 @router.message(StateFilter(AuthStates.waiting_for_username))
-async def register_username(message: types.Message, state: FSMContext):
+async def submit_username(message: types.Message, state: FSMContext):
     username = message.text
     telegram_id = message.from_user.id
     if db_manager.register_user(telegram_id, username):
