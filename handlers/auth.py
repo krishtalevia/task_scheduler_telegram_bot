@@ -15,8 +15,7 @@ class AuthStates(StatesGroup):
 async def register_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
     if db_manager.get_user(telegram_id) is None:
-        db_manager.register_user:
-        await message.answer('Вы успешно зарегистрировались.')
-        state.set_state(AuthStates.authorized)
+        db_manager.register_user
+        await message.answer('Вы успешно зарегистрировались. Для авторизации используйте /login')
     else:
         await message.answer('Вы уже зарегистрированы.')
