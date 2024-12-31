@@ -9,10 +9,14 @@ router = Router()
 db_manager = DatabaseManager()
 
 class AuthStates(StatesGroup):
-    registered = State()
+    authorized = State()
 
-@router.message(StateFilter(None), Command('start'))
-async def start_handler(message: types.Message, state: FSMContext):
+@router.message(StateFilter(None), Command('register'))
+async def register_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
     if db_manager.get_user(telegram_id) is None:
-        await message.answer('Для начала работы с ботом зарегистрируйтесь командой "/register"')
+        db_manager.register_user:
+        await message.answer('Вы успешно зарегистрировались.')
+        state.set_state(AuthStates.authorized)
+    else:
+        await message.answer('Вы уже зарегистрированы.')
