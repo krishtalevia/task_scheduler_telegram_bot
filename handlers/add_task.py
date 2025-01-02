@@ -26,3 +26,10 @@ async def adding_title_handler(message: types.Message, state: FSMContext):
     title = message.text
     await state.update_data(title=title)
     await state.set_state(AddingTaskStates.AddingDescription)
+
+@router.message(StateFilter(AddingTaskStates.AddingDescription))
+async def adding_description_handler(message: types.Message, state: FSMContext):
+    await message.answer('Введите описание задачи (опционально):')
+    description = message.text if len(message.text) > 0 else None
+    await state.update_data(description=description)
+    await state.set_state(AddingTaskStates.AddingDeadline)
