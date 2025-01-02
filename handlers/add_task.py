@@ -51,7 +51,7 @@ async def adding_deadline_handler(message: types.Message, state: FSMContext):
     await state.set_state(AddingTaskStates.AddingPriority)
 
 @router.message(StateFilter(AddingTaskStates.AddingPriority))
-async def adding_priority_handler(message: types.Message, state: FSMContext)
+async def adding_priority_handler(message: types.Message, state: FSMContext):
     while True:
         await message.answer('Введите приоритет задачи (низкий, средний, высокий):')
         priority = message.text
