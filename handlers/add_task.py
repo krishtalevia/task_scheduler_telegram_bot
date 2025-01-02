@@ -15,6 +15,7 @@ class AddingTaskStates(StatesGroup):
     AddingDescription = State()
     AddingDeadline = State()
     AddingPriority = State()
+    TaskConfirmation = State()
 
 @router.message(StateFilter(AuthStates.authorized), Command('add_task'))
 async def add_task_handler(message: types.Message, state: FSMContext):
@@ -48,3 +49,18 @@ async def adding_deadline_handler(message: types.Message, state: FSMContext):
             await message.answer('Неверный формат. Введите дату в формате ГГГГ-ММ-ДД.')
         
     await state.set_state(AddingTaskStates.AddingPriority)
+
+@router.message(StateFilter(AddingTaskStates.AddingPriority))
+async def adding_priority_handler(message: types.Message, state: FSMContext)
+    while True:
+        await message.answer('Введите приоритет задачи (низкий, средний, высокий):')
+        priority = message.text
+
+    
+        if priority in ('низкий', 'средний', 'высокий'):
+            await state.update_data(priority=priority)
+            break
+        else:
+            await message.answer('Приоритет задачи может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
+    
+    await state.set_state(AddingTaskStates.TaskConfirmation)
