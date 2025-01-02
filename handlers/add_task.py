@@ -9,3 +9,9 @@ from model import DatabaseManager
 
 router = Router()
 db_manager = DatabaseManager()
+
+class AddingTaskStates(StatesGroup):
+    AddingTitle = State()
+    AddingDescription = State()
+    AddingDeadline = State()
+    AddingPriority = State()
