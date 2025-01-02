@@ -15,3 +15,7 @@ class AddingTaskStates(StatesGroup):
     AddingDescription = State()
     AddingDeadline = State()
     AddingPriority = State()
+
+@router.message(StateFilter(AuthStates.authorized), Command('add_task'))
+async def add_task_handler(message: types.Message, state: FSMContext):
+    pass
