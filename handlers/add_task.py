@@ -18,4 +18,11 @@ class AddingTaskStates(StatesGroup):
 
 @router.message(StateFilter(AuthStates.authorized), Command('add_task'))
 async def add_task_handler(message: types.Message, state: FSMContext):
-    pass
+    await state.set_state(AddingTaskStates.AddingTitle)
+
+@router.message(StateFilter(AddingTaskStates.AddingTitle))
+async def adding_title_handler(message: types.Message, state: FSMContext):
+    await message.answer('Введите название задачи:')
+    title = message.text
+    await state.update_data(title=title)
+    await state.set_state(AddingTaskStates.AddingDescription)
