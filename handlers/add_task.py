@@ -1,10 +1,10 @@
+import datetime
 from aiogram import Router, types
 from aiogram.filters import StateFilter, Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from handlers.auth import AuthStates
-
 from model import DatabaseManager
 
 router = Router()
@@ -33,3 +33,18 @@ async def adding_description_handler(message: types.Message, state: FSMContext):
     description = message.text if len(message.text) > 0 else None
     await state.update_data(description=description)
     await state.set_state(AddingTaskStates.AddingDeadline)
+
+@router.message(StateFilter(AddingTaskStates.AddingDeadline))
+async def adding_deadline_handler(message: types.Message, state: FSMContext):
+    while True:
+        await message.answer('Введите дату исполнения задачи (ГГГГ-ММ-ДД): ')
+        date = message.text
+    
+        try:
+            deadline = datetime.strptime(date, '%Y-%m-%d')
+            await state.update_data(deadline=deadline)
+            break
+        except ValueError:
+            await message.answer('Неверный формат. Введите дату в формате ГГГГ-ММ-ДД.')
+        
+    await state.set_state(AddingTaskStates.AddingPriority)
