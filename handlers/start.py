@@ -3,7 +3,7 @@ from aiogram.filters import StateFilter, Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from auth import AuthStates
+from handlers.auth import AuthStates
 
 from model import DatabaseManager
 
@@ -21,7 +21,7 @@ async def start_handler(message: types.Message, state: FSMContext):
 
     await message.answer(
         f'👋 Данный бот предназначен для управления личными задачами.\n\n'
-        f'📋 Этот бот позволяет:\n
+        f'📋 Этот бот позволяет:\n'
         f'• Управлять задачами\n'
         f'• Устанавливать дедлайны и приоритеты\n'
         f'• Получать напоминания о приближении сроков\n\n'
@@ -31,5 +31,5 @@ async def start_handler(message: types.Message, state: FSMContext):
         f'{authorization_status}\n\n'
         f'ℹ️ Для регистрации используйте команду /register.\n'
         f'Для авторизации — /login.\n'
-        f'Список доступных команд — /help'
+        f'Список доступных команд — /help.'
     )

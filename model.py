@@ -6,7 +6,7 @@ def init_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
-            telegram_id     INTEGER UNIQUE,
+            telegram_id     INTEGER UNIQUE
         );
     ''')
     cursor.execute('''
@@ -74,7 +74,7 @@ class DatabaseManager:
             return False
         
     def get_user(self, telegram_id):
-        self.cursor.execute('SELECT FROM users WHERE telegram_id = ?', (telegram_id))
+        self.cursor.execute('SELECT * FROM users WHERE telegram_id = ?', (telegram_id,))
         return self.cursor.fetchone()
 
     def add_task(self, user_id, title, description, deadline, priority, completed=False):

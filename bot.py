@@ -3,12 +3,13 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 from config import TOKEN
-from handlers import auth, tasks
+from handlers import start, auth, tasks
 
 async def main():
     bot = Bot(token=TOKEN) 
     dp = Dispatcher()
 
+    dp.include_routers(start.router)
     dp.include_routers(auth.router)
     dp.include_routers(tasks.router)
 
