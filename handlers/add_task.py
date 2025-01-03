@@ -16,7 +16,7 @@ class AddingTaskStates(StatesGroup):
     AddingDeadline = State()
     AddingPriority = State()
     TaskReview = State()
-    TaskConfirmation = State()
+    TaskAddingConfirmation = State()
 
 @router.message(StateFilter(AuthStates.authorized), Command('add_task'))
 async def add_task_handler(message: types.Message, state: FSMContext):
@@ -83,4 +83,29 @@ async def task_review(message: types.Message, state: FSMContext):
         f'Добавить данную задачу (Да/Нет)?'
     )
 
-    await state.set_state(AddingTaskStates.TaskConfirmation)
+    await state.set_state(AddingTaskStates.TaskAddingConfirmation)
+
+@router.message(StateFilter(AddingTaskStates.TaskAddingConfirmation))
+async def task_adding_confirmation(message: types.Message, state: FSMContext):
+    if message.text.lower() == 'да':
+        telegram_id = message.from_user.id
+        data = await state.get_data()
+        title = data['title']
+        description = data['description']
+        deadline = data['deadline']
+        priority = data['priority']
+
+        task = Task(telegram_id, title, description, deadline, priority)
+        db_manager.add_task(task)
+
+        await message.answer('✅ Задача успешно добавлена!')
+        await state.clear()
+        await state.set_state(AuthStates.authorized)
+
+    elif message.text.lower() == 'нет':
+        await message.answer('❌ Добавление задачи отменено.')
+        await state.clear()
+        await state.set_state(AuthStates.authorized)
+
+    else:
+        await message.answer('⚠️ Ответ должен содержать одно из значений: "Да" или "Нет".')
