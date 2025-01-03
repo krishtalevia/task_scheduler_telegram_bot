@@ -78,8 +78,6 @@ class DatabaseManager:
         return self.cursor.fetchone()
 
     def add_task(self, user_id, title, description, deadline, priority, completed=False):
-        if priority not in ['низкий', 'средний', 'высокий']:
-            raise ValueError('Приоритет может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
         self.cursor.execute('''
             INSERT INTO tasks (user_id, title, description, deadline, priority, completed)
             VALUES (?, ?, ?, ?, ?, ?)
