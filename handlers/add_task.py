@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from handlers.auth import AuthStates
-from model import DatabaseManager
+from model import DatabaseManager, Task
 
 router = Router()
 db_manager = DatabaseManager()
@@ -64,3 +64,26 @@ async def adding_priority_handler(message: types.Message, state: FSMContext):
             await message.answer('Приоритет задачи может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
     
     await state.set_state(AddingTaskStates.TaskConfirmation)
+
+@router.message(StateFilter(AddingTaskStates.TaskConfirmation))
+async def task_adding_confirmation(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    title = data['title']
+    description = data['description']
+    deadline = data['deadline']
+    priority = data['priority']
+    
+    await message.answer(
+        f'📝 Задача:\n'
+        f'📌 Название: {title}\n'
+        f'📖 Описание: {description if description else "нет"}\n'
+        f'📅 Срок: {deadline}\n'
+        f'🎯 Приоритет: {priority}\n\n'
+        f'Добавить данную задачу (Да/Нет)?'
+    )
+
+    while True:
+        if message.text.lower() == 'да':
+            telegram_id = message.from_user.id
+            task = Task(telegram_id, title, description, deadline, priority)
+            
