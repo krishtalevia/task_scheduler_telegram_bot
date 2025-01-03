@@ -15,6 +15,7 @@ class AddingTaskStates(StatesGroup):
     AddingDescription = State()
     AddingDeadline = State()
     AddingPriority = State()
+    TaskReview = State()
     TaskConfirmation = State()
 
 @router.message(StateFilter(AuthStates.authorized), Command('add_task'))
@@ -63,10 +64,10 @@ async def adding_priority_handler(message: types.Message, state: FSMContext):
         else:
             await message.answer('Приоритет задачи может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
     
-    await state.set_state(AddingTaskStates.TaskConfirmation)
+    await state.set_state(AddingTaskStates.TaskReview)
 
-@router.message(StateFilter(AddingTaskStates.TaskConfirmation))
-async def task_adding_confirmation(message: types.Message, state: FSMContext):
+@router.message(StateFilter(AddingTaskStates.TaskReview))
+async def task_review(message: types.Message, state: FSMContext):
     data = await state.get_data()
     title = data['title']
     description = data['description']
@@ -82,8 +83,4 @@ async def task_adding_confirmation(message: types.Message, state: FSMContext):
         f'Добавить данную задачу (Да/Нет)?'
     )
 
-    while True:
-        if message.text.lower() == 'да':
-            telegram_id = message.from_user.id
-            task = Task(telegram_id, title, description, deadline, priority)
-            
+    await state.set_state(AddingTaskStates.TaskConfirmation)
