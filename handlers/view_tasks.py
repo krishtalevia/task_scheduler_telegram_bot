@@ -52,6 +52,12 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
             if len(dates) == 2:
                 start_date, end_date = dates
                 filtered_tasks = filter_tasks_by_custom_period(tasks, start_date, end_date)
+                if filtered_tasks:
+                    await message.answer(show_tasks(filtered_tasks))
+                else:
+                    await message.answer('Нет задач на заданный период.')
+            else:
+                await message.answer('Неверный формат периода. (Пример: /view_tasks период 2025-01-01 2025-02-01)')
 
 def filter_tasks_by_priority(tasks, priority):
     priority = priority.lower()
@@ -102,7 +108,7 @@ def filter_tasks_by_custom_period(tasks, start_date, end_date):
         task_deadline = datetime.trptime(task['deadline'], '%Y-%m-%d').date()
         if start_date <= task_deadline <= end_date:
             filtered_tasks.append(task)
-            
+
     return filtered_tasks
 
 def show_tasks(tasks):
