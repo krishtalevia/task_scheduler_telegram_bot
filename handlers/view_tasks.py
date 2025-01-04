@@ -40,7 +40,7 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
     elif 'срок' in args:
         if '=' in args:
             deadline_type = args.split('=')[1].strip().lower()
-            filtered_tasks = filter_tasks_by_deadline(tasks deadline_type)
+            filtered_tasks = filter_tasks_by_deadline(tasks, deadline_type)
 
 def filter_tasks_by_priority(tasks, priority):
     priority = priority.lower()
@@ -79,6 +79,8 @@ def filter_tasks_by_deadline(tasks, deadline_type):
             task_deadline = datetime.strptime(task['deadline'], '%Y-%m-%d').date()
             if today <= task_deadline <= week_ahead:
                 filtered_tasks.append(task)
+
+    return filtered_tasks
 
 def show_tasks(tasks):
     if not tasks:
