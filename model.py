@@ -67,7 +67,7 @@ class DatabaseManager:
 
     def register_user(self, telegram_id):
         try:
-            self.cursor.execute('INSERT INTO users (telegram_id) VALUES (?)', (telegram_id))
+            self.cursor.execute('INSERT INTO users (telegram_id) VALUES (?)', (telegram_id,))
             self.connection.commit()
             return True
         except Exception:
