@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 from aiogram import Router, types
 from aiogram.filters import StateFilter, Command, CommandObject
 from aiogram.fsm.context import FSMContext
@@ -17,6 +17,9 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
 
     tasks = db_manager.get_tasks(telegram_id)
 
+    if not tasks:
+        await message.answer('У вас нет задач.')
+
     if not args:
         await message.answer(show_tasks(tasks))
 
@@ -24,10 +27,8 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
         if '=' in args:
             priority = args.split('=')[1].strip().lower()
             
-            filtered_tasks = []
-            for task in tasks:
-                if task['priority'].lower() == priority:
-                    filtered_tasks.append(task)
+            filtered_tasks = filter_tasks_by_priority(tasks, priority)
+    
             if filtered_tasks:
                 await message.answer(show_tasks(filtered_tasks))
             else:
@@ -44,6 +45,34 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
                     if priority_a > priority_b:
                         task[j], tasks[j + 1] = tasks[j + 1], tasks[j]
             await message.answer(show_tasks(tasks))
+
+    elif 'срок' in args:
+        if '=' in args:
+            deadline = args.split('=')[1].strip().lower()
+
+            filtered_tasks = []
+            if deadline == 'сегодня':
+                for task in tasks:
+                    task_deadline = datetime.strptime(task['deadline'], '%Y-%m-%d')
+                    if task_deadline.date() == datetime.today().date():
+                        filtered_tasks.append(task)
+            
+            elif deadline == 'неделя':
+                today = datetime.today().date()
+                week_ahead = today + timedelta(days=7)
+
+                for task in tasks:
+                    task_dealine = datetime.strptime(task['deadline'], '%Y-%m-%d').date()
+                    if today <= task_deadline <= week_ahead:
+                        filtered_tasks.append(task)
+
+def filter_tasks_by_priority(tasks, priority):
+    priority = priority.lower()
+    filtered_tasks = []
+    for task in tasks:
+        if task['priority'].lower() == priority():
+            filtered_tasks.append(task)
+    return filtered_tasks
 
 def show_tasks(tasks):
     if not tasks:
