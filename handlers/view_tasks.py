@@ -63,6 +63,19 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
             else:
                 await message.answer('Неверный формат периода. (Пример: /view_tasks период 2025-01-01 2025-02-01)')
 
+    elif 'статус' in args:
+        if '=' in args:
+            status = args.split('=').strip()
+            filtered_tasks = filter_tasks_by_status(tasks, status)
+            if filtered_tasks:
+                await message.answer(show_tasks(filtered_tasks))
+            else:
+                await message.answer(f'Нет задач со статусом {status}')
+        
+        else:
+            sorted_tasks = sort_tasks_by_status(tasks)
+            await message.answer(show_tasks(sorted_tasks))
+
 def filter_tasks_by_priority(tasks, priority):
     priority = priority.lower()
     filtered_tasks = []
@@ -94,6 +107,19 @@ def sort_tasks_by_deadline(tasks):
     
     return tasks
 
+def sort_tasks_by_status(tasks):
+    status_order = {'Выполнена': 1, 'В процессе': 2}
+
+    for i in range(len(tasks)):
+        for j in range(0, len(tasks) - i - 1):
+            task_a = status_order[tasks[j]['status'].lower()]
+            task_b = status_order[tasks[j + 1]['status'].lower()]
+
+            if task_a > task_b:
+                tasks[j], tasks[j + 1] = tasks[j +1], tasks[j]
+    
+    return tasks
+
 def filter_tasks_by_deadline(tasks, deadline_type):
     today = datetime.today().date()
     filtered_tasks = []
@@ -122,6 +148,15 @@ def filter_tasks_by_custom_period(tasks, start_date, end_date):
     for task in tasks:
         task_deadline = datetime.trptime(task['deadline'], '%Y-%m-%d').date()
         if start_date <= task_deadline <= end_date:
+            filtered_tasks.append(task)
+
+    return filtered_tasks
+
+def filter_tasks_by_status(tasks, status):
+    filtered_tasks = []
+
+    for task in tasks:
+        if task['status'] == status:
             filtered_tasks.append(task)
 
     return filtered_tasks
