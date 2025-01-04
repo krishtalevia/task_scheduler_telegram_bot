@@ -148,7 +148,7 @@ def filter_tasks_by_custom_period(tasks, start_date, end_date):
     filtered_tasks = []
 
     for task in tasks:
-        task_deadline = datetime.trptime(task['deadline'], '%Y-%m-%d').date()
+        task_deadline = datetime.strptime(task['deadline'], '%Y-%m-%d').date()
         if start_date <= task_deadline <= end_date:
             filtered_tasks.append(task)
 
