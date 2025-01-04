@@ -26,7 +26,6 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
     elif 'приоритет' in args:
         if '=' in args:
             priority = args.split('=')[1].strip().lower()
-            
             filtered_tasks = filter_tasks_by_priority(tasks, priority)
     
             if filtered_tasks:
@@ -35,16 +34,8 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
                 await message.answer(f'Задач с приоритетом {priority} нет.')
         
         else:
-            priority_order = {'высокий': 1, 'средний': 2, 'низкий': 3}
-
-            for i in range(len(tasks)):
-                for j in range(0, len(tasks) - i - 1):
-                    priority_a = priority_order[tasks[j]['priority'].lower()]
-                    priority_b = priority_order[tasks[j + 1]['priority'].lower()]
-
-                    if priority_a > priority_b:
-                        task[j], tasks[j + 1] = tasks[j + 1], tasks[j]
-            await message.answer(show_tasks(tasks))
+            sorted_tasks = sort_tasks_by_priority(tasks)
+            await message.answer(show_tasks(sorted_tasks))
 
     elif 'срок' in args:
         if '=' in args:
@@ -73,6 +64,18 @@ def filter_tasks_by_priority(tasks, priority):
         if task['priority'].lower() == priority():
             filtered_tasks.append(task)
     return filtered_tasks
+
+def sort_tasks_by_priority(tasks):
+    priority_order = {'высокий': 1, 'средний': 2, 'низкий': 3}
+
+    for i in range(len(tasks)):
+        for j in range(0, len(tasks) - i - 1):
+            priority_a = priority_order[tasks[j]['priority'].lower()]
+            priority_b = priority_order[tasks[j + 1]['priority'].lower()]
+
+            if priority_a > priority_b:
+                tasks[j], tasks[j + 1] = tasks[j + 1], tasks[j]
+    return tasks
 
 def show_tasks(tasks):
     if not tasks:
