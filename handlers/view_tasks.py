@@ -76,16 +76,6 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
             sorted_tasks = sort_tasks_by_status(tasks)
             await message.answer(show_tasks(sorted_tasks))
 
-def filter_tasks_by_priority(tasks, priority):
-    priority = priority.lower()
-    filtered_tasks = []
-
-    for task in tasks:
-        if task['priority'].lower() == priority:
-            filtered_tasks.append(task)
-
-    return filtered_tasks
-
 def sort_tasks_by_priority(tasks):
     priority_order = {'высокий': 1, 'средний': 2, 'низкий': 3}
 
@@ -121,6 +111,16 @@ def sort_tasks_by_status(tasks):
                 tasks[j], tasks[j + 1] = tasks[j +1], tasks[j]
     
     return tasks
+
+def filter_tasks_by_priority(tasks, priority):
+    priority = priority.lower()
+    filtered_tasks = []
+
+    for task in tasks:
+        if task['priority'].lower() == priority:
+            filtered_tasks.append(task)
+
+    return filtered_tasks
 
 def filter_tasks_by_deadline(tasks, deadline_type):
     today = datetime.today().date()
