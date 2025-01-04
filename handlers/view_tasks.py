@@ -173,12 +173,14 @@ def show_tasks(tasks):
         description = task['description']
         deadline = task['deadline']
         priority = task['priority']
+        status = task['status']
 
         result.append(
             f"📌 {title}\n"
             f"📖 {description}\n"
             f"📅 {deadline}\n"
             f"🎯 {priority}\n"
+            f"✅ {status}\n"
         )
-
+        
     return '\n'.join(result)
