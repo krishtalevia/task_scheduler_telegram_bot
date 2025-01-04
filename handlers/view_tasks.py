@@ -16,10 +16,7 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
     args = command.args
 
     tasks = db_manager.get_tasks(telegram_id)
-
-    if not tasks:
-        await message.answer('У вас нет задач.')
-
+    
     if not args:
         await message.answer(show_tasks(tasks))
 
@@ -182,5 +179,5 @@ def show_tasks(tasks):
             f"🎯 {priority}\n"
             f"✅ {status}\n"
         )
-        
+
     return '\n'.join(result)
