@@ -70,8 +70,8 @@ class DatabaseManager:
             self.cursor.execute('INSERT INTO users (telegram_id) VALUES (?)', (telegram_id,))
             self.connection.commit()
             return True
-        except Exception:
-            return False
+        except sqlite3.IntegrityError:
+            raise ValueError('Пользователь уже существует.')
         
     def get_user(self, telegram_id):
         self.cursor.execute('SELECT * FROM users WHERE telegram_id = ?', (telegram_id,))
