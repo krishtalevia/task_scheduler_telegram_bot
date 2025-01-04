@@ -16,7 +16,7 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
     args = command.args
 
     tasks = db_manager.get_tasks(telegram_id)
-    
+
     if not args:
         await message.answer(show_tasks(tasks))
 
@@ -173,11 +173,11 @@ def show_tasks(tasks):
         status = task['status']
 
         result.append(
-            f"📌 {title}\n"
-            f"📖 {description}\n"
-            f"📅 {deadline}\n"
-            f"🎯 {priority}\n"
-            f"✅ {status}\n"
+            f'📌 {title}\n'
+            f'📖 {description if description else "нет"}\n'
+            f'📅 {deadline}\n'
+            f'🎯 {priority}\n'
+            f'✅ {status}\n'
         )
 
     return '\n'.join(result)
