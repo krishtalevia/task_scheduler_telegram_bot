@@ -45,6 +45,13 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
                 await message.answer(show_tasks(filtered_tasks))
             else:
                 await message.answer(f'Задач со сроком {deadline_type} нет.')
+    
+    elif 'период' in args:
+        if '=' in args:
+            dates = args.split('=').strip().split()
+            if len(dates) == 2:
+                start_date, end_date = dates
+                filtered_tasks = filter_tasks_by_custom_period(tasks, start_date, end_date)
 
 def filter_tasks_by_priority(tasks, priority):
     priority = priority.lower()
@@ -84,6 +91,18 @@ def filter_tasks_by_deadline(tasks, deadline_type):
             if today <= task_deadline <= week_ahead:
                 filtered_tasks.append(task)
 
+    return filtered_tasks
+
+def filter_tasks_by_custom_period(tasks, start_date, end_date):
+    start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+    end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+    filtered_tasks = []
+
+    for task in tasks:
+        task_deadline = datetime.trptime(task['deadline'], '%Y-%m-%d').date()
+        if start_date <= task_deadline <= end_date:
+            filtered_tasks.append(task)
+            
     return filtered_tasks
 
 def show_tasks(tasks):
