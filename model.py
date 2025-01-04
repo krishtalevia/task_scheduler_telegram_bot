@@ -17,7 +17,7 @@ def init_db():
             description     TEXT,
             deadline        DATE,
             priority        TEXT,
-            completed       BOOLEAN,
+            status          BOOLEAN,
             FOREIGN KEY (user_id) REFERENCES users (id)
         );
     ''')
@@ -28,13 +28,13 @@ if __name__ == '__main__':
     init_db()
 
 class Task:
-    def __init__(self, user_id, title, description, deadline, priority, completed):
+    def __init__(self, user_id, title, description, deadline, priority, status):
         self._user_id = user_id
         self._title = title
         self._description = description
         self._deadline = deadline
         self._priority = priority
-        self._completed = completed
+        self._status = status
 
     @property
     def user_id(self):
@@ -77,11 +77,11 @@ class DatabaseManager:
         self.cursor.execute('SELECT * FROM users WHERE telegram_id = ?', (telegram_id,))
         return self.cursor.fetchone()
 
-    def add_task(self, user_id, title, description, deadline, priority, completed=False):
+    def add_task(self, user_id, title, description, deadline, priority, status=False):
         self.cursor.execute('''
-            INSERT INTO tasks (user_id, title, description, deadline, priority, completed)
+            INSERT INTO tasks (user_id, title, description, deadline, priority, status)
             VALUES (?, ?, ?, ?, ?, ?)
-        ''', (user_id, title, description, deadline, priority, int(completed)))
+        ''', (user_id, title, description, deadline, priority, int(status)))
         self.connection.commit()
     
     def get_tasks(self, user_id):
