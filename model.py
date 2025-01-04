@@ -85,7 +85,7 @@ class DatabaseManager:
         self.connection.commit()
     
     def get_tasks(self, user_id):
-        self.cursor.execute('SELECT * FROM tasks WHERE user_id = ?', (user_id))
+        self.cursor.execute('SELECT * FROM tasks WHERE user_id = ?', (user_id,))
         return self.cursor.fetchall()
     
     def close(self):
