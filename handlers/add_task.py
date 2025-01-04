@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from aiogram import Router, types
 from aiogram.filters import StateFilter, Command, CommandObject
 from aiogram.fsm.context import FSMContext
@@ -25,6 +25,11 @@ async def add_task_handler(message: types.Message, state: FSMContext):
 @router.message(StateFilter(AddingTaskStates.AddingTitle))
 async def adding_title_handler(message: types.Message, state: FSMContext):
     await message.answer('Введите название задачи:')
+    
+    if not message.text.strip():
+        await message.answer('⚠️ Пустой ввод. Повторите попытку.')
+        return
+
     title = message.text
     await state.update_data(title=title)
     await state.set_state(AddingTaskStates.AddingDescription)
@@ -38,33 +43,26 @@ async def adding_description_handler(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(AddingTaskStates.AddingDeadline))
 async def adding_deadline_handler(message: types.Message, state: FSMContext):
-    while True:
-        await message.answer('Введите дату исполнения задачи (ГГГГ-ММ-ДД): ')
-        date = message.text
-    
-        try:
-            deadline = datetime.strptime(date, '%Y-%m-%d')
-            await state.update_data(deadline=deadline)
-            break
-        except ValueError:
-            await message.answer('Неверный формат. Введите дату в формате ГГГГ-ММ-ДД.')
-        
-    await state.set_state(AddingTaskStates.AddingPriority)
+    date = message.text.strip()
+
+    try:
+        deadline = datetime.strptime(date, '%Y-%m-%d').date()
+        await state.update_data(deadline=deadline)
+
+        await state.set_state(AddingTaskStates.AddingPriority)
+    except ValueError:
+        await message.answer('⚠️ Неверный формат. Введите дату в формате ГГГГ-ММ-ДД.')
 
 @router.message(StateFilter(AddingTaskStates.AddingPriority))
 async def adding_priority_handler(message: types.Message, state: FSMContext):
-    while True:
-        await message.answer('Введите приоритет задачи (низкий, средний, высокий):')
-        priority = message.text
-
+    await message.answer('Введите приоритет задачи (низкий, средний, высокий):')
+    priority = message.text
     
-        if priority in ('низкий', 'средний', 'высокий'):
-            await state.update_data(priority=priority)
-            break
-        else:
-            await message.answer('Приоритет задачи может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
-    
-    await state.set_state(AddingTaskStates.TaskReview)
+    if priority in ('низкий', 'средний', 'высокий'):
+        await state.update_data(priority=priority)
+        await state.set_state(AddingTaskStates.TaskReview)
+    else:
+        await message.answer('Приоритет задачи может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
 
 @router.message(StateFilter(AddingTaskStates.TaskReview))
 async def task_review(message: types.Message, state: FSMContext):
@@ -96,11 +94,13 @@ async def task_adding_confirmation(message: types.Message, state: FSMContext):
         priority = data['priority']
 
         task = Task(telegram_id, title, description, deadline, priority)
-        db_manager.add_task(task)
-
-        await message.answer('✅ Задача успешно добавлена!')
-        await state.clear()
-        await state.set_state(AuthStates.authorized)
+        try:
+            db_manager.add_task(task)
+            await message.answer('✅ Задача успешно добавлена!')
+            await state.clear()
+            await state.set_state(AuthStates.authorized)
+        except Exception:
+            await message.answer('⚠️ Произошла ошибка при добавлении задачи. Попробуйте снова.')
 
     elif message.text.lower() == 'нет':
         await message.answer('❌ Добавление задачи отменено.')
