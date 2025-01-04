@@ -45,6 +45,10 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
                 await message.answer(show_tasks(filtered_tasks))
             else:
                 await message.answer(f'Задач со сроком {deadline_type} нет.')
+        
+        else:
+            sorted_tasks = sort_tasks_by_deadline(tasks)
+            await message.answer(show_tasks(sorted_tasks))
     
     elif 'период' in args:
         if '=' in args:
@@ -77,6 +81,17 @@ def sort_tasks_by_priority(tasks):
 
             if priority_a > priority_b:
                 tasks[j], tasks[j + 1] = tasks[j + 1], tasks[j]
+    return tasks
+
+def sort_tasks_by_deadline(tasks):
+    for i in range(len(tasks)):
+        for j in range(0, len(tasks) - i - 1):
+            date_a = datetime.strptime(tasks[j]['deadline'], '%Y-%m-%d')
+            date_b = datetime.strptime(tasks[j + 1]['deadline'], '%Y-%m-%d')
+
+            if date_a > date_b:
+                tasks[j], tasks[j + 1] = tasks[j + 1], tasks[j]
+    
     return tasks
 
 def filter_tasks_by_deadline(tasks, deadline_type):
