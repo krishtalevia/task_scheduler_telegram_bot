@@ -12,11 +12,13 @@ class AuthStates(StatesGroup):
     authorized = State()
 
 @router.message(StateFilter(None), Command('register'))
-async def register_handler(message: types.Message, state: FSMContext):
+async def register_handler(message: types.Message, state: FSMContext):    
     telegram_id = message.from_user.id
     if db_manager.get_user(telegram_id) is None:
-        db_manager.register_user(telegram_id)
-        await message.answer('Вы успешно зарегистрировались. Для авторизации используйте /login')
+        if db_manager.register_user(telegram_id):
+            await message.answer('Вы успешно зарегистрировались. Для авторизации используйте /login')
+        else:
+           await message.answer('Во время регистрации произошла ошибка.')
     else:
         await message.answer('Вы уже зарегистрированы. Используйте /login для авторизации')
 
