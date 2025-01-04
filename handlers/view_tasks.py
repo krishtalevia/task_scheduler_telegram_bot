@@ -79,9 +79,11 @@ async def view_tasks_handler(message: types.Message, command: CommandObject, sta
 def filter_tasks_by_priority(tasks, priority):
     priority = priority.lower()
     filtered_tasks = []
+
     for task in tasks:
-        if task['priority'].lower() == priority():
+        if task['priority'].lower() == priority:
             filtered_tasks.append(task)
+
     return filtered_tasks
 
 def sort_tasks_by_priority(tasks):
