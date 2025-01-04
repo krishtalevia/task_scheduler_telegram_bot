@@ -100,7 +100,7 @@ def sort_tasks_by_deadline(tasks):
     return tasks
 
 def sort_tasks_by_status(tasks):
-    status_order = {'Выполнена': 1, 'В процессе': 2}
+    status_order = {'выполнена': 1, 'не выполнена': 2}
 
     for i in range(len(tasks)):
         for j in range(0, len(tasks) - i - 1):
