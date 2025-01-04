@@ -1,5 +1,5 @@
 from aiogram import Router, types
-from aiogram.filters import StateFilter, Command, CommandObject
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
@@ -10,7 +10,7 @@ from model import DatabaseManager
 router = Router()
 db_manager = DatabaseManager()
 
-@router.message(StateFilter(None), Command('start'))
+@router.message(Command('start'))
 async def start_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
     user = db_manager.get_user(telegram_id)
