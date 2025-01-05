@@ -83,8 +83,8 @@ def sort_tasks_by_priority(tasks):
 
     for i in range(len(tasks)):
         for j in range(0, len(tasks) - i - 1):
-            priority_a = priority_order[tasks[j]['priority'].lower()]
-            priority_b = priority_order[tasks[j + 1]['priority'].lower()]
+            priority_a = priority_order[tasks[j][5].lower()]
+            priority_b = priority_order[tasks[j + 1][5].lower()]
 
             if priority_a > priority_b:
                 tasks[j], tasks[j + 1] = tasks[j + 1], tasks[j]
@@ -93,8 +93,8 @@ def sort_tasks_by_priority(tasks):
 def sort_tasks_by_deadline(tasks):
     for i in range(len(tasks)):
         for j in range(0, len(tasks) - i - 1):
-            date_a = datetime.strptime(tasks[j]['deadline'], '%Y-%m-%d')
-            date_b = datetime.strptime(tasks[j + 1]['deadline'], '%Y-%m-%d')
+            date_a = datetime.strptime(tasks[j][4], '%Y-%m-%d')
+            date_b = datetime.strptime(tasks[j + 1][4], '%Y-%m-%d')
 
             if date_a > date_b:
                 tasks[j], tasks[j + 1] = tasks[j + 1], tasks[j]
@@ -106,8 +106,8 @@ def sort_tasks_by_status(tasks):
 
     for i in range(len(tasks)):
         for j in range(0, len(tasks) - i - 1):
-            task_a = status_order[tasks[j]['status'].lower()]
-            task_b = status_order[tasks[j + 1]['status'].lower()]
+            task_a = status_order[tasks[j][6].lower()]
+            task_b = status_order[tasks[j + 1][6].lower()]
 
             if task_a > task_b:
                 tasks[j], tasks[j + 1] = tasks[j +1], tasks[j]
@@ -119,7 +119,7 @@ def filter_tasks_by_priority(tasks, priority):
     filtered_tasks = []
 
     for task in tasks:
-        if task['priority'].lower() == priority:
+        if task[5].lower() == priority:
             filtered_tasks.append(task)
 
     return filtered_tasks
@@ -130,7 +130,7 @@ def filter_tasks_by_deadline(tasks, deadline_type):
 
     if deadline_type == 'сегодня':
         for task in tasks:
-            task_deadline = datetime.strptime(task['deadline'], '%Y-%m-%d')
+            task_deadline = datetime.strptime(task[4], '%Y-%m-%d')
             if task_deadline.date() == today:
                 filtered_tasks.append(task)
             
@@ -138,7 +138,7 @@ def filter_tasks_by_deadline(tasks, deadline_type):
         week_ahead = today + timedelta(days=7)
 
         for task in tasks:
-            task_deadline = datetime.strptime(task['deadline'], '%Y-%m-%d').date()
+            task_deadline = datetime.strptime(task[4], '%Y-%m-%d').date()
             if today <= task_deadline <= week_ahead:
                 filtered_tasks.append(task)
 
@@ -150,7 +150,7 @@ def filter_tasks_by_custom_period(tasks, start_date, end_date):
     filtered_tasks = []
 
     for task in tasks:
-        task_deadline = datetime.strptime(task['deadline'], '%Y-%m-%d').date()
+        task_deadline = datetime.strptime(task[4], '%Y-%m-%d').date()
         if start_date <= task_deadline <= end_date:
             filtered_tasks.append(task)
 
@@ -171,18 +171,18 @@ def show_tasks(tasks):
     
     result = []
     for task in tasks:
-        title = task['title']
-        description = task['description']
-        deadline = task['deadline']
-        priority = task['priority']
-        status = task['status']
+        title = task[2]
+        description = task[3]
+        deadline = task[4]
+        priority = task[5]
+        status = task[6]
 
         result.append(
             f'📌 {title}\n'
             f'📖 {description if description else "нет"}\n'
             f'📅 {deadline}\n'
             f'🎯 {priority}\n'
-            f'✅ {status}\n'
+            f'✅ {'Выполнена' if status == 1 else 'Не выполнена'}\n'
         )
 
     return '\n'.join(result)
