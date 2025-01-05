@@ -84,11 +84,9 @@ class DatabaseManager:
 
         if result is None:
             raise ValueError('Пользователь не зарегистрирован.')
-            return False
         
         if result[0] == 1:
             raise ValueError('Пользователь уже авторизован.')
-            return False
 
         self.cursor.execute('UPDATE users SET is_authorized = 1 WHERE telegram_id = ?', (telegram_id,))
         self.connection.commit()
