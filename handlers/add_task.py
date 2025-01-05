@@ -48,21 +48,21 @@ async def adding_description_handler(message: types.Message, state: FSMContext):
     description = message.text if len(message.text) > 0 else None
     await state.update_data(description=description)
 
-    await message.answer('📅 Введите срок исполнения задачи в формате ГГГГ-ММ-ДД:')
+    await message.answer('📅 Введите срок исполнения задачи в формате ГГГГ-ММ-ДД ЧЧ:ММ:')
     await state.set_state(AddingTaskStates.AddingDeadline)
 
 @router.message(StateFilter(AddingTaskStates.AddingDeadline))
 async def adding_deadline_handler(message: types.Message, state: FSMContext):
-    date = message.text.strip()
+    date_time = message.text.strip()
 
     try:
-        deadline = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        deadline = datetime.datetime.strptime(date_time, '%Y-%m-%d %H:%M')
         await state.update_data(deadline=deadline)
 
         await message.answer('🎯 Введите приоритет задачи (низкий, средний, высокий):')
         await state.set_state(AddingTaskStates.AddingPriority)
     except ValueError:
-        await message.answer('⚠️ Неверный формат. Введите дату в формате ГГГГ-ММ-ДД.')
+        await message.answer('⚠️ Неверный формат. Введите дату в формате ГГГГ-ММ-ДД ЧЧ:ММ.')
 
 @router.message(StateFilter(AddingTaskStates.AddingPriority))
 async def adding_priority_handler(message: types.Message, state: FSMContext):
