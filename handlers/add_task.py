@@ -19,6 +19,17 @@ class AddingTaskStates(StatesGroup):
 
 @router.message(Command('add_task'))
 async def add_task_handler(message: types.Message, state: FSMContext):
+    telegram_id = message.from_user.id
+
+    user = db_manager.get_tasks(telegram_id)
+    if not user:
+        await message.answer('❌ Вы не зарегистрированы. Используйте команду /register для регистрации.')
+        return
+    
+    if not db_manager.is_user_authorized(telegram_id):
+        await message.answer('❌ Вы не авторизованы. Используйте команду /login для авторизации.')
+        return
+    
     await state.set_state(AddingTaskStates.AddingTitle)
 
 @router.message(StateFilter(AddingTaskStates.AddingTitle))
