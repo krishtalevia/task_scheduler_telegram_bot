@@ -21,7 +21,7 @@ class AddingTaskStates(StatesGroup):
 async def add_task_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
 
-    user = db_manager.get_tasks(telegram_id)
+    user = db_manager.get_user(telegram_id)
     if not user:
         await message.answer('❌ Вы не зарегистрированы. Используйте команду /register для регистрации.')
         return
