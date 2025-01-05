@@ -180,11 +180,11 @@ def show_tasks(tasks):
 
         result.append(
             f'🆔 ID: {task_id}\n'
-            f'📌 {title}\n'
-            f'📖 {description if description else "нет"}\n'
-            f'📅 {deadline}\n'
-            f'🎯 {priority}\n'
-            f'✅ {'Выполнена' if status == 1 else 'Не выполнена'}\n'
+            f'📌 Название: {title}\n'
+            f'📖 Описание: {description if description else "нет"}\n'
+            f'📅 Срок: {deadline}\n'
+            f'🎯 Приоритет: {priority}\n'
+            f'✅ Статус: {'Выполнена' if status == 1 else 'Не выполнена'}\n'
             f'{"-" * 30}'
         )
 
