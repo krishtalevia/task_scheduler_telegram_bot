@@ -171,6 +171,7 @@ def show_tasks(tasks):
     
     result = []
     for task in tasks:
+        task_id = task[0]
         title = task[2]
         description = task[3]
         deadline = task[4]
@@ -178,11 +179,13 @@ def show_tasks(tasks):
         status = task[6]
 
         result.append(
+            f'🆔 ID: {task_id}\n'
             f'📌 {title}\n'
             f'📖 {description if description else "нет"}\n'
             f'📅 {deadline}\n'
             f'🎯 {priority}\n'
             f'✅ {'Выполнена' if status == 1 else 'Не выполнена'}\n'
+            f'{"-" * 30}'
         )
 
     return '\n'.join(result)
