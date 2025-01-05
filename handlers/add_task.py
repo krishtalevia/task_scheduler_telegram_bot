@@ -69,7 +69,8 @@ async def adding_priority_handler(message: types.Message, state: FSMContext):
     priority = message.text.lower()
     
     if priority in ('низкий', 'средний', 'высокий'):
-        await state.update_data(priority=priority)
+        capitalized_priority = priority.capitalize()
+        await state.update_data(priority=capitalized_priority)
 
         data = await state.get_data()
         title = data['title']
@@ -100,10 +101,9 @@ async def task_adding_confirmation(message: types.Message, state: FSMContext):
         description = data['description']
         deadline = data['deadline']
         priority = data['priority']
-
-        task = Task(telegram_id, title, description, deadline, priority)
+        
         try:
-            db_manager.add_task(task)
+            db_manager.add_task(telegram_id, title, description, deadline, priority, status=False)
             await message.answer('✅ Задача успешно добавлена!')
             await state.clear()
         except Exception:
