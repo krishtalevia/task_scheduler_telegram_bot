@@ -94,9 +94,10 @@ class DatabaseManager:
         self.connection.commit()
         return True
 
-    
     def is_user_authorized(self, telegram_id):
-
+        self.cursor.execute('SELECT is_authorized FROM users WHERE telegram_id = ?' (telegram_id,))
+        result = self.cursor.fetchone()
+        return True if result[0] == 1 else False
 
     def add_task(self, user_id, title, description, deadline, priority, status=False):
         self.cursor.execute('''
