@@ -1,6 +1,6 @@
-from datetime import datetime
+import datetime
 from aiogram import Router, types
-from aiogram.filters import StateFilter, Command, CommandObject
+from aiogram.filters import StateFilter, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
@@ -46,7 +46,7 @@ async def adding_deadline_handler(message: types.Message, state: FSMContext):
     date = message.text.strip()
 
     try:
-        deadline = datetime.strptime(date, '%Y-%m-%d').date()
+        deadline = datetime.datetime.strptime(date, '%Y-%m-%d').date()
         await state.update_data(deadline=deadline)
 
         await state.set_state(AddingTaskStates.AddingPriority)
