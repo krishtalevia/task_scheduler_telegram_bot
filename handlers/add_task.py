@@ -34,7 +34,7 @@ async def add_task_handler(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(AddingTaskStates.AddingTitle))
 async def adding_title_handler(message: types.Message, state: FSMContext):
-    await message.answer('Введите название задачи:')
+    await message.answer('📌 Введите название задачи:')
     
     if not message.text.strip():
         await message.answer('⚠️ Пустой ввод. Повторите попытку.')
@@ -46,13 +46,15 @@ async def adding_title_handler(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(AddingTaskStates.AddingDescription))
 async def adding_description_handler(message: types.Message, state: FSMContext):
-    await message.answer('Введите описание задачи (опционально):')
+    await message.answer('📖 Введите описание задачи (опционально):')
     description = message.text if len(message.text) > 0 else None
     await state.update_data(description=description)
     await state.set_state(AddingTaskStates.AddingDeadline)
 
 @router.message(StateFilter(AddingTaskStates.AddingDeadline))
 async def adding_deadline_handler(message: types.Message, state: FSMContext):
+    await message.answer('📅 Введите срок исполнения задачи в формате ГГГГ-ММ-ДД:')
+    
     date = message.text.strip()
 
     try:
@@ -65,14 +67,14 @@ async def adding_deadline_handler(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(AddingTaskStates.AddingPriority))
 async def adding_priority_handler(message: types.Message, state: FSMContext):
-    await message.answer('Введите приоритет задачи (низкий, средний, высокий):')
+    await message.answer('🎯 Введите приоритет задачи (низкий, средний, высокий):')
     priority = message.text
     
     if priority in ('низкий', 'средний', 'высокий'):
         await state.update_data(priority=priority)
         await state.set_state(AddingTaskStates.TaskReview)
     else:
-        await message.answer('Приоритет задачи может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
+        await message.answer('⚠️ Приоритет задачи может иметь одно из следующих значений: "низкий", "средний" или "высокий".')
 
 @router.message(StateFilter(AddingTaskStates.TaskReview))
 async def task_review(message: types.Message, state: FSMContext):
@@ -97,6 +99,7 @@ async def task_review(message: types.Message, state: FSMContext):
 async def task_adding_confirmation(message: types.Message, state: FSMContext):
     if message.text.lower() == 'да':
         telegram_id = message.from_user.id
+        
         data = await state.get_data()
         title = data['title']
         description = data['description']
@@ -108,14 +111,12 @@ async def task_adding_confirmation(message: types.Message, state: FSMContext):
             db_manager.add_task(task)
             await message.answer('✅ Задача успешно добавлена!')
             await state.clear()
-            await state.set_state(AuthStates.authorized)
         except Exception:
             await message.answer('⚠️ Произошла ошибка при добавлении задачи. Попробуйте снова.')
 
     elif message.text.lower() == 'нет':
         await message.answer('❌ Добавление задачи отменено.')
         await state.clear()
-        await state.set_state(AuthStates.authorized)
 
     else:
         await message.answer('⚠️ Ответ должен содержать одно из значений: "Да" или "Нет".')
