@@ -77,6 +77,26 @@ class DatabaseManager:
     def get_user(self, telegram_id):
         self.cursor.execute('SELECT * FROM users WHERE telegram_id = ?', (telegram_id,))
         return self.cursor.fetchone()
+    
+    def authorize_user(self, telegram_id):
+        self.cursor.execute('SELECT is_authorized FROM users WHERE telegram_id = ?', (telegram_id,))
+        result = self.cursor.fetchone()
+
+        if result is None:
+            raise ValueError('Пользователь не зарегистрирован.')
+            return False
+        
+        if result[0] == 1:
+            raise ValueError('Пользователь уже авторизован.')
+            return False
+
+        self.cursor.execute('UPDATE users SET is_authorized = 1 WHERE telegram_id = ?', (telegram_id,))
+        self.connection.commit()
+        return True
+
+    
+    def is_user_authorized(self, telegram_id):
+
 
     def add_task(self, user_id, title, description, deadline, priority, status=False):
         self.cursor.execute('''
