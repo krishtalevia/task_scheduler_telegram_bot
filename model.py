@@ -95,7 +95,9 @@ class DatabaseManager:
     def is_user_authorized(self, telegram_id):
         self.cursor.execute('SELECT is_authorized FROM users WHERE telegram_id = ?', (telegram_id,))
         result = self.cursor.fetchone()
-        return True if result[0] == 1 else False
+        if result is None:
+            raise ValueError('Пользователь не найден.')
+        return result[0] == 1
     
     def logout_user(self, telegram_id):
         if self.is_user_authorized(telegram_id):
