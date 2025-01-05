@@ -40,7 +40,7 @@ async def adding_title_handler(message: types.Message, state: FSMContext):
     title = message.text
     await state.update_data(title=title)
 
-    await message.answer('📖 Введите описание задачи (опционально):')
+    await message.answer('📖 Введите описание задачи:')
     await state.set_state(AddingTaskStates.AddingDescription)
 
 @router.message(StateFilter(AddingTaskStates.AddingDescription))
