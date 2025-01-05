@@ -8,9 +8,6 @@ from model import DatabaseManager
 router = Router()
 db_manager = DatabaseManager()
 
-class AuthStates(StatesGroup):
-    authorized = State()
-
 @router.message(StateFilter(None), Command('register'))
 async def register_handler(message: types.Message, state: FSMContext):    
     telegram_id = message.from_user.id
