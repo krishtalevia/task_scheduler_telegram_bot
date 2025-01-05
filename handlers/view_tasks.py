@@ -10,11 +10,19 @@ from model import DatabaseManager, Task
 router = Router()
 db_manager = DatabaseManager()
 
-@router.message(StateFilter(AuthStates.authorized), Command('view_tasks'))
+@router.message(Command('view_tasks'))
 async def view_tasks_handler(message: types.Message, command: CommandObject, state: FSMContext):
     telegram_id = message.from_user.id
     args = command.args
 
+    if not db_manager.get_user(telegram_id):
+        await message.answer('❌ Вы не зарегистрированы. Пожалуйста, зарегистрируйтесь.')
+        return
+    
+    if not db_manager.is_user_authorized(telegram_id):
+        await message.answer('❌ Вы не авторизованы. Пожалуйста, авторизуйтесь.')
+        return
+    
     tasks = db_manager.get_tasks(telegram_id)
 
     if not args:
