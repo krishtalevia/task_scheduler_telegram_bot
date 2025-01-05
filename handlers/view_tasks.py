@@ -163,7 +163,7 @@ def filter_tasks_by_status(tasks, status):
     filtered_tasks = []
 
     for task in tasks:
-        if task['status'] == status:
+        if task['status'].lower() == status.lower():
             filtered_tasks.append(task)
 
     return filtered_tasks
