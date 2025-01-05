@@ -17,7 +17,7 @@ class AddingTaskStates(StatesGroup):
     TaskReview = State()
     TaskAddingConfirmation = State()
 
-@router.message(StateFilter(AuthStates.authorized), Command('add_task'))
+@router.message(Command('add_task'))
 async def add_task_handler(message: types.Message, state: FSMContext):
     await state.set_state(AddingTaskStates.AddingTitle)
 
