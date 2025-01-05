@@ -1,8 +1,5 @@
 from aiogram import Router, types
 from aiogram.filters import Command
-from aiogram.fsm.context import FSMContext
-
-from handlers.auth import AuthStates
 
 from model import DatabaseManager
 
@@ -12,11 +9,17 @@ db_manager = DatabaseManager()
 @router.message(Command('start'))
 async def start_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
+    
     user = db_manager.get_user(telegram_id)
-    current_state = await state.get_state()
-
-    registration_status = "✅ Зарегистрирован" if user else "❌ Не зарегистрирован"
-    authorization_status = "✅ Авторизован" if current_state == AuthStates.authorized.state else "❌ Не авторизован"
+    if not user:
+        registration_status = "❌ Не зарегистрирован"
+        authorization_status = "❌ Не авторизован"
+    else:
+        registration_status = "✅ Зарегистрирован"
+        if db_manager.is_user_authorized(telegram_id):
+            authorization_status = "✅ Авторизован"
+        else:
+            authorization_status = "❌ Не авторизован"
 
     await message.answer(
         f'👋 Данный бот предназначен для управления личными задачами.\n\n'
