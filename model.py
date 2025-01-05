@@ -98,6 +98,12 @@ class DatabaseManager:
         self.cursor.execute('SELECT is_authorized FROM users WHERE telegram_id = ?' (telegram_id,))
         result = self.cursor.fetchone()
         return True if result[0] == 1 else False
+    
+    def logout_user(self, telegram_id):
+        if self.is_user_authorized(telegram_id):
+            self.cursor.execute('UPDATE users SET is_authorized = 0 WHERE telegram_id = ?', (telegram_id,))
+        else:
+            raise Exception('Пользователь не авторизован.')
 
     def add_task(self, user_id, title, description, deadline, priority, status=False):
         self.cursor.execute('''
