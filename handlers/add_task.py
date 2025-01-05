@@ -4,7 +4,6 @@ from aiogram.filters import StateFilter, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from handlers.auth import AuthStates
 from model import DatabaseManager, Task
 
 router = Router()
