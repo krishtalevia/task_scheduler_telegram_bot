@@ -7,7 +7,7 @@ router = Router()
 db_manager = DatabaseManager()
 
 @router.message(Command('start'))
-async def start_handler(message: types.Message, state: FSMContext):
+async def start_handler(message: types.Message):
     telegram_id = message.from_user.id
     
     user = db_manager.get_user(telegram_id)
