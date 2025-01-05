@@ -1,17 +1,14 @@
 from datetime import datetime, timedelta
 from aiogram import Router, types
-from aiogram.filters import StateFilter, Command, CommandObject
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.filters import Command, CommandObject
 
-from handlers.auth import AuthStates
-from model import DatabaseManager, Task
+from model import DatabaseManager
 
 router = Router()
 db_manager = DatabaseManager()
 
 @router.message(Command('view_tasks'))
-async def view_tasks_handler(message: types.Message, command: CommandObject, state: FSMContext):
+async def view_tasks_handler(message: types.Message, command: CommandObject):
     telegram_id = message.from_user.id
     args = command.args
 
