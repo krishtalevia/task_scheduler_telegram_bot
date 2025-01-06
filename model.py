@@ -118,5 +118,9 @@ class DatabaseManager:
         self.cursor.execute('SELECT * FROM tasks WHERE user_id = ?', (user_id,))
         return self.cursor.fetchall()
     
+    def get_task_by_id(self, user_id, task_id):
+        self.cursor.execute('SELECT * FROM tasks WHERE user_id = ? and id = ?', (user_id, task_id,))
+        return self.cursor.fetchone()
+    
     def close(self):
         self.connection.close()
