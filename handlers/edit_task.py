@@ -42,4 +42,17 @@ async def choosing_parameter_handler(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(EditTaskStates.EditingParameter))
 async def editing_parameter_handler(message: types.Message, state: FSMContext):
-    pass
+    data = await state.get_data()
+    task_id = data['task_id']
+    parameter = message.text.strip().lower()
+
+    parameters = {
+        '1': 'title',
+        '2': 'description',
+        '3': 'deadline',
+        '4': 'priority',
+    }
+
+    if parameter not in parameters:
+        await message.answer('⚠️ Некорректный выбор параметра. Попробуйте снова.')
+        return
