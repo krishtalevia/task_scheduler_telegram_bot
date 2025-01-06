@@ -3,7 +3,8 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 from config import TOKEN
-from handlers import start, add_task, auth, view_tasks, edit_task, complete_task
+from handlers import start, add_task, auth, view_tasks, edit_task, complete_task, delete_task, reminders
+from reminder_scheduler import reminder_schedule
 
 async def main():
     bot = Bot(token=TOKEN) 
@@ -15,9 +16,15 @@ async def main():
     dp.include_routers(view_tasks.router)
     dp.include_router(edit_task.router)
     dp.include_router(complete_task.router)
+    dp.include_router(delete_task.router)
+    dp.include_router(reminders.router)
+
+    reminder_task = asyncio.create_task(reminder_schedule(dp))
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
+    await reminder_task
 
 if __name__ == '__main__':
     asyncio.run(main())
