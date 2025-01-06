@@ -14,4 +14,20 @@ class DeleteTaskStates(StatesGroup):
 @router.message(StateFilter(None), Command('delete_task'))
 async def delete_task_handler(message: types.Message, state: FSMContext):
     await message.answer('Введите ID задачи, которую требуется удалить:')
-    await state.set_state(DeleteTaskStates.Completing)
+    await state.set_state(DeleteTaskStates.Deleting)
+
+@router.message(StateFilter(DeleteTaskStates.Deleting))
+async def deleting_handler(message: types.Message, state: FSMContext):
+    telegram_id = message.from_user.id
+    task_id = message.text
+    task = db_manager.get_task_by_id(telegram_id, task_id)
+
+    if task:
+        if db_manager.delete_task(telegram_id, task_id):
+            await message.answer('✅ Задача удалена.')
+        else:
+            await message.answer('⚠️ В процессе удаления задачи произошла ошибка.')
+    else:
+        await message.answer('⚠️ Задачи с таким ID нет.')
+
+    state.clear()
