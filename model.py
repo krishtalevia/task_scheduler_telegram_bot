@@ -126,6 +126,11 @@ class DatabaseManager:
         self.cursor.execute(f'UPDATE tasks SET {parameter_name} = ? WHERE user_id = ? AND id = ?', (new_value, user_id, task_id))
         self.connection.commit()
         return True
+
+    def delete_task(self, user_id, task_id):
+        self.cursor.execute(f'DELETE FROM tasks WHERE user_id = ? and id = ?', (user_id, task_id))
+        self.connection.commit()
+        return True
     
     def close(self):
         self.connection.close()
