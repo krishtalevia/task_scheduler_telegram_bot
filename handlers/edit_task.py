@@ -28,3 +28,14 @@ async def choosing_parameter_handler(message: types.Message, state: FSMContext):
         await message.answer('❌ Задача с таким ID не найдена.')
         await state.clear()
         return
+    
+    await state.update_data(task_id=task_id)
+    await message.answer(
+        "Какой параметр задачи вы хотите изменить?\n"
+        "1. Название\n"
+        "2. Описание\n"
+        "3. Срок\n"
+        "4. Приоритет\n\n"
+        "Введите номер или название параметра:"
+    )
+    await state.set_state(EditTaskStates.EditinParameter)
