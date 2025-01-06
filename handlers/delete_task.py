@@ -8,5 +8,5 @@ from model import DatabaseManager
 router = Router()
 db_manager = DatabaseManager()
 
-class CompleteTaskStates(StatesGroup):
-    Completing = State()
+class DeleteTaskStates(StatesGroup):
+    Deleting = State()
