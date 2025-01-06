@@ -13,6 +13,6 @@ router = Router()
 db_manager = DatabaseManager()
 
 @router.message(Command('edit_task'))
-async def edit_task_handler(message: types.Message, state: FSMContext)
+async def edit_task_handler(message: types.Message, state: FSMContext):
     await message.answer('Введите ID задачи, которую хотите изменить:')
     await state.set_state(EditTaskStates.ChoosingParameter)
