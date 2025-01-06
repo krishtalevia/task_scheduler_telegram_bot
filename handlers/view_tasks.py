@@ -46,7 +46,7 @@ async def view_tasks_handler(message: types.Message, command: CommandObject):
             if filtered_tasks:
                 await message.answer(show_tasks(filtered_tasks))
             else:
-                await message.answer(f'Задач со сроком {deadline_type} нет.')
+                await message.answer(f'Задач со сроком на {deadline_type} нет.')
         
         else:
             sorted_tasks = sort_tasks_by_deadline(tasks)
@@ -54,7 +54,7 @@ async def view_tasks_handler(message: types.Message, command: CommandObject):
     
     elif 'период' in args:
         if '=' in args:
-            dates = args.split('=').strip().split()
+            dates = args.split('=')[1].split()
             if len(dates) == 2:
                 start_date, end_date = dates
                 filtered_tasks = filter_tasks_by_custom_period(tasks, start_date, end_date)
@@ -127,18 +127,22 @@ def filter_tasks_by_priority(tasks, priority):
 def filter_tasks_by_deadline(tasks, deadline_type):
     today = datetime.today().date()
     filtered_tasks = []
+    print(f'Сегодня: {today}')
 
     if deadline_type == 'сегодня':
         for task in tasks:
-            task_deadline = datetime.strptime(task[4], '%Y-%m-%d')
-            if task_deadline.date() == today:
+            task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
+            print(f"Срок задачи: {task_deadline}")
+            if task_deadline == today:
                 filtered_tasks.append(task)
             
     elif deadline_type == 'неделя':
         week_ahead = today + timedelta(days=7)
+        print(f"Конец недели: {week_ahead}")
 
         for task in tasks:
-            task_deadline = datetime.strptime(task[4], '%Y-%m-%d').date()
+            task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
+            print(f"Срок задачи: {task_deadline}")
             if today <= task_deadline <= week_ahead:
                 filtered_tasks.append(task)
 
@@ -150,7 +154,7 @@ def filter_tasks_by_custom_period(tasks, start_date, end_date):
     filtered_tasks = []
 
     for task in tasks:
-        task_deadline = datetime.strptime(task[4], '%Y-%m-%d').date()
+        task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
         if start_date <= task_deadline <= end_date:
             filtered_tasks.append(task)
 
