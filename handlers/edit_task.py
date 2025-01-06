@@ -43,8 +43,7 @@ async def choosing_parameter_handler(message: types.Message, state: FSMContext):
 @router.message(StateFilter(EditTaskStates.EditingParameter))
 async def editing_parameter_handler(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    task_id = data['task_id']
-    parameter = message.text.strip().lower()
+    input_parameter = message.text.strip().lower()
 
     parameters = {
         '1': 'title',
@@ -53,6 +52,19 @@ async def editing_parameter_handler(message: types.Message, state: FSMContext):
         '4': 'priority',
     }
 
-    if parameter not in parameters:
+    if input_parameter not in parameters:
         await message.answer('⚠️ Некорректный выбор параметра. Попробуйте снова.')
         return
+    
+    chosen_parameter = parameters[input_parameter]
+    await state.update_data(chosen_parameter=chosen_parameter)
+    
+    parameter_edit_text = {
+        'title': 'Введите новое название задачи:',
+        'description': 'Введите новое описание задачи:',
+        'deadline': 'Введите новый срок задачи в формате ГГГГ-ММ-ДД ЧЧ:ММ',
+        'priority': 'Введите новый приоритет задачи (низкий, средний, высокий):',
+    }[chosen_parameter]
+
+    await message.answer(parameter_edit_text)
+    await state.set_state(EditTaskStates.ChoosingParameter)
