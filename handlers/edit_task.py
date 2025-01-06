@@ -7,13 +7,13 @@ from aiogram.fsm.state import StatesGroup, State
 
 from model import DatabaseManager
 
+router = Router()
+db_manager = DatabaseManager()
+
 class EditTaskStates(StatesGroup):
     ChoosingParameter = State()
     EditingParameter = State()
     ConfirmingEdit = State()
-
-router = Router()
-db_manager = DatabaseManager()
 
 @router.message(Command('edit_task'))
 async def edit_task_handler(message: types.Message, state: FSMContext):
