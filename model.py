@@ -119,8 +119,13 @@ class DatabaseManager:
         return self.cursor.fetchall()
     
     def get_task_by_id(self, user_id, task_id):
-        self.cursor.execute('SELECT * FROM tasks WHERE user_id = ? and id = ?', (user_id, task_id,))
+        self.cursor.execute('SELECT * FROM tasks WHERE user_id = ? AND id = ?', (user_id, task_id,))
         return self.cursor.fetchone()
+    
+    def update_task(self, user_id, task_id, parameter_name, new_value):
+        self.cursor.execute(f'UPDATE tasks SET {parameter_name} = ? WHERE user_id = ? AND id = ?', (new_value, user_id, task_id))
+        self.connection.commit()
+        return True
     
     def close(self):
         self.connection.close()
