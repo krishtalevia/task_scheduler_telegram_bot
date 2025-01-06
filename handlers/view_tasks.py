@@ -127,22 +127,18 @@ def filter_tasks_by_priority(tasks, priority):
 def filter_tasks_by_deadline(tasks, deadline_type):
     today = datetime.today().date()
     filtered_tasks = []
-    print(f'Сегодня: {today}')
 
     if deadline_type == 'сегодня':
         for task in tasks:
             task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
-            print(f"Срок задачи: {task_deadline}")
             if task_deadline == today:
                 filtered_tasks.append(task)
             
     elif deadline_type == 'неделя':
         week_ahead = today + timedelta(days=7)
-        print(f"Конец недели: {week_ahead}")
 
         for task in tasks:
             task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
-            print(f"Срок задачи: {task_deadline}")
             if today <= task_deadline <= week_ahead:
                 filtered_tasks.append(task)
 
