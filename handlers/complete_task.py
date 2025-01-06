@@ -19,14 +19,14 @@ async def complete_task_handler(message: types.Message, state: FSMContext):
 @router.message(StateFilter(CompleteTaskStates.Completing))
 async def completing_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
-    task_id = message.text()
-    task = db_manager.get_task_by_id(task_id)
+    task_id = message.text
+    task = db_manager.get_task_by_id(telegram_id, task_id)
 
     if task:
-        if task[6] == 'Выполнена':
+        if task[6] == 1:
             await message.answer(f'⚠️ Задача с ID {task_id} уже выполнена.')
 
-        elif task[6] == 'Не выполнена':
+        elif task[6] == 0:
             if db_manager.update_task(telegram_id, task_id, parameter_name='status', new_value=True):
                 await message.answer(f'🎉 Задача с ID {task_id} теперь выполнена.')
             else:
