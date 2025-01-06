@@ -75,7 +75,7 @@ class DatabaseManager:
         return True
     
     def set_user_reminder_time(self, telegram_id, reminder_time):
-        self.cursor.execute('UPDATE users SET reminder_time = ? WHERE id = ?', (reminder_time, user_id))
+        self.cursor.execute('UPDATE users SET reminder_time = ? WHERE id = ?', (reminder_time, telegram_id))
         self.connection.commit()
         return True
     
