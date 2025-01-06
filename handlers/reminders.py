@@ -22,3 +22,19 @@ async def reminders_handler(message: types.Message, state: FSMContext):
         "3️⃣ За 1 день\n"
     )
     await state.set_state(ReminderStates.ChooseReminderTime)
+
+@router.message(StateFilter(ReminderStates.ChooseReminderTime))
+async def reminder_choice_handler(message: types.Message, state: FSMContext):
+    user_choice = message.text.lower()
+
+    if user_choice in ['1', 'за 1 час', '1 час']:
+        await message.answer('⏳ Вы выбрали напоминание за 1 час.')
+    elif user_choice in ['2', 'за 2 часа', '2 часа']:
+        await message.answer('⏳ Вы выбрали напоминание за 2 часа.')
+    elif user_choice in ['3', 'за 1 день', '1 день']:
+        await message.answer('⏳ Вы выбрали напоминание за 1 день.')
+    else:
+        await message.answer('⚠️ Неверный ввод.')
+        return
+    
+    await state.clear()
