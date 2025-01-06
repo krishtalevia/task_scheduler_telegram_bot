@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter, Command
@@ -8,6 +10,7 @@ from model import DatabaseManager
 class EditTaskStates(StatesGroup):
     ChoosingParameter = State()
     EditingParameter = State()
+    ConfirmingEdit = State()
 
 router = Router()
 db_manager = DatabaseManager()
@@ -67,4 +70,29 @@ async def editing_parameter_handler(message: types.Message, state: FSMContext):
     }[chosen_parameter]
 
     await message.answer(parameter_edit_text)
-    await state.set_state(EditTaskStates.ChoosingParameter)
+    await state.set_state(EditTaskStates.ConfirmingEdit)
+
+@router.message(StateFilter(EditTaskStates.ConfirmingEdit))
+async def confirming_edit_handler(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    telegram_id = message.from_user.id
+    task_id = int(data['task_id'])
+    chosen_parameter = data['chosen_parameter']
+    new_value = message.text
+
+    try:
+        if chosen_parameter == 'deadline':
+            new_value = datetime.datetime.strptime(new_value, '%Y-%m-%d %H:%M')
+        elif chosen_parameter == 'priority':
+            new_value = new_value.capitalize()
+            if new_value not in ('Низкий', 'Средний', 'Высокий'):
+                raise Exception
+        
+        db_manager.update_task(telegram_id, task_id, chosen_parameter, new_value)
+        await message.answer(f"✅ Параметр задачи '{chosen_parameter}' успешно обновлён.")
+        await state.clear()
+
+    except Exception:
+        await message.answer('⚠️ Во время изменения параметра задачи произошла ошибка.')
+        await state.clear()    
+        return
