@@ -7,7 +7,8 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
             telegram_id     INTEGER UNIQUE,
-            is_authorized   BOOLEAN DEFAULT 0
+            is_authorized   BOOLEAN DEFAULT 0,
+            reminder_time   INTEGER DEFAULT 60
         );
     ''')
     cursor.execute('''
@@ -72,7 +73,12 @@ class DatabaseManager:
         self.cursor.execute('INSERT INTO users (telegram_id) VALUES (?)', (telegram_id,))
         self.connection.commit()
         return True
-        
+    
+    def set_user_reminder_time(self, telegram_id, reminder_time):
+        self.cursor.execute('UPDATE users SET reminder_time = ? WHERE id = ?', (reminder_time, user_id))
+        self.connection.commit()
+        return True
+    
     def get_user(self, telegram_id):
         self.cursor.execute('SELECT * FROM users WHERE telegram_id = ?', (telegram_id,))
         return self.cursor.fetchone()
