@@ -89,7 +89,7 @@ async def confirming_edit_handler(message: types.Message, state: FSMContext):
                 raise Exception
         
         db_manager.update_task(telegram_id, task_id, chosen_parameter, new_value)
-        await message.answer(f"✅ Параметр задачи '{chosen_parameter}' успешно обновлён.")
+        await message.answer(f"✅ Параметр задачи успешно обновлён.")
         await state.clear()
 
     except Exception:
