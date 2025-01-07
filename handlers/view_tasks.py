@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta
 from aiogram import Router, types
-from aiogram.filters import Command, CommandObject
+from aiogram.filters import Command, CommandObject, StateFilter
 
 from model import DatabaseManager
 
 router = Router()
 db_manager = DatabaseManager()
 
-@router.message(Command('view_tasks'))
+@router.message(StateFilter(None), Command('view_tasks'))
 async def view_tasks_handler(message: types.Message, command: CommandObject):
     telegram_id = message.from_user.id
     args = command.args
