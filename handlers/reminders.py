@@ -21,6 +21,9 @@ async def reminders_handler(message: types.Message, state: FSMContext):
         "2️⃣ За 2 часа\n"
         "3️⃣ За 1 день\n"
     )
+    telegram_id = message.from_user.id
+    user = db_manager.get_user(telegram_id)
+    await message.answer(f'Сейчас установлено: {user[3]}')
     await state.set_state(ReminderStates.ChooseReminderTime)
 
 @router.message(StateFilter(ReminderStates.ChooseReminderTime))
@@ -30,15 +33,16 @@ async def reminder_choice_handler(message: types.Message, state: FSMContext):
 
     if user_choice in ['1', 'за 1 час', '1 час']:
         await message.answer('⏳ Вы выбрали напоминание за 1 час.')
-        await db_manager.set_user_reminder_time(telegram_id, 1)
+        db_manager.set_user_reminder_time(telegram_id, 1)
     elif user_choice in ['2', 'за 2 часа', '2 часа']:
         await message.answer('⏳ Вы выбрали напоминание за 2 часа.')
-        await db_manager.set_user_reminder_time(telegram_id, 2)
+        db_manager.set_user_reminder_time(telegram_id, 2)
     elif user_choice in ['3', 'за 1 день', '1 день']:
         await message.answer('⏳ Вы выбрали напоминание за 1 день.')
-        await db_manager.set_user_reminder_time(telegram_id, 24)
+        db_manager.set_user_reminder_time(telegram_id, 24)
     else:
         await message.answer('⚠️ Неверный ввод.')
+        await state.clear()
         return
     
     await state.clear()
