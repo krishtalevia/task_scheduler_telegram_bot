@@ -8,7 +8,7 @@ def init_db():
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
             telegram_id     INTEGER UNIQUE,
             is_authorized   BOOLEAN DEFAULT 0,
-            reminder_time   INTEGER DEFAULT 60
+            reminder_time   INTEGER DEFAULT 1
         );
     ''')
     cursor.execute('''
@@ -17,7 +17,7 @@ def init_db():
             user_id         INTEGER,
             title           TEXT,
             description     TEXT,
-            deadline        DATE,
+            deadline        DATETIME,
             priority        TEXT,
             status          BOOLEAN,
             FOREIGN KEY (user_id) REFERENCES users (id)
