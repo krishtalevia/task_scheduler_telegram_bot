@@ -115,11 +115,11 @@ class DatabaseManager:
             raise ValueError('Пользователь не авторизован.')
             return False
 
-    def add_task(self, user_id, title, description, deadline, priority, status=False):
+    def add_task(self, user_id, title, description, deadline, priority, created_at, completed_at=None, status=False):
         self.cursor.execute('''
-            INSERT INTO tasks (user_id, title, description, deadline, priority, status)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (user_id, title, description, deadline, priority, int(status)))
+            INSERT INTO tasks (user_id, title, description, deadline, priority, status, created_at, completed_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (user_id, title, description, deadline, priority, int(status), created_at, completed_at))
         self.connection.commit()
     
     def get_tasks(self, user_id):
