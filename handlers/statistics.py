@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from aiogram import Router, types
 from aiogram.filters import Command, CommandObject
@@ -44,7 +44,7 @@ def show_statistics(tasks, period=None):
         if task[6] == 1:
             if period:
                 start_date, end_date = period
-                if start_date <= completed_tasks <= end_date:
+                if start_date <= completed_time <= end_date:
                     completed_tasks += 1
 
             else:
