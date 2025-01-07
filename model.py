@@ -20,6 +20,8 @@ def init_db():
             deadline        DATETIME,
             priority        TEXT,
             status          BOOLEAN,
+            created_at      DATETIME,
+            completed_at    DATETIME,
             FOREIGN KEY (user_id) REFERENCES users (id)
         );
     ''')
