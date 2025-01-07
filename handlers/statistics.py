@@ -49,7 +49,7 @@ def show_statistics(tasks, period=None):
     if not tasks:
         return '❌ Задачи не найдены.'
     
-    current_time_no_ms = datetime.datetime.now().replace(microsecond=0)
+    current_time_no_ms = datetime.now().replace(microsecond=0)
 
     completed_tasks = 0
     tasks_in_progress = 0
@@ -59,9 +59,11 @@ def show_statistics(tasks, period=None):
     total_time = timedelta()
 
     for task in tasks:
-        created_time = datetime.strptime(task[7], '%Y-%m-%d %H:%M:%S')
-        deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S')
-        completed_time = datetime.strptime(task[8], '%Y-%m-%d %H:%M:%S')
+        print(task[7], task[8], task[4])
+        created_time = datetime.strptime(str(task[7]), '%Y-%m-%d %H:%M:%S')
+        deadline = datetime.strptime(str(task[4]), '%Y-%m-%d %H:%M:%S')
+        if task[8] is not None:
+            completed_time = datetime.strptime(str(task[8]), '%Y-%m-%d %H:%M:%S')
         
         if task[6] == 1:
             if period:
