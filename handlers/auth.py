@@ -1,12 +1,13 @@
 from aiogram import Router, types
-from aiogram.filters import Command
+from aiogram.filters import Command, StateFilter
+
 
 from model import DatabaseManager
 
 router = Router()
 db_manager = DatabaseManager()
 
-@router.message(Command('register'))
+@router.message(StateFilter(None), Command('register'))
 async def register_handler(message: types.Message):    
     telegram_id = message.from_user.id
     if db_manager.get_user(telegram_id) is None:
@@ -17,7 +18,7 @@ async def register_handler(message: types.Message):
     else:
         await message.answer('⚠️ Вы уже зарегистрированы. Используйте /login для авторизации')
 
-@router.message(Command('login'))
+@router.message(StateFilter(None), Command('login'))
 async def login_handler(message: types.Message):
     telegram_id = message.from_user.id
 
