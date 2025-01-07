@@ -3,7 +3,7 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 from config import TOKEN
-from handlers import start, add_task, auth, view_tasks, edit_task, complete_task, delete_task, reminders
+from handlers import start, add_task, auth, view_tasks, edit_task, complete_task, delete_task, reminders, statistics
 from reminder_scheduler import reminder_schedule
 
 async def main():
@@ -18,6 +18,7 @@ async def main():
     dp.include_routers(complete_task.router)
     dp.include_routers(delete_task.router)
     dp.include_routers(reminders.router)
+    dp.include_routers(statistics.router)
 
     reminder_task = asyncio.create_task(reminder_schedule(bot))
 
