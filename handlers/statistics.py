@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta
 
 from aiogram import Router, types
-from aiogram.filters import Command, CommandObject
+from aiogram.filters import Command, CommandObject, StateFilter
 
 from model import DatabaseManager
 
 router = Router()
 db_manager = DatabaseManager()
 
-@router.message(Command('statistics'))
+@router.message(StateFilter(None), Command('statistics'))
 async def statistics_handler(message: types.Message, command: CommandObject):
     telegram_id = message.from_user.id
     args = command.args
