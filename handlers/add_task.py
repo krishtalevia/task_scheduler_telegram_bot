@@ -101,9 +101,10 @@ async def task_adding_confirmation(message: types.Message, state: FSMContext):
         description = data['description']
         deadline = data['deadline']
         priority = data['priority']
-        
+        created_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
         try:
-            db_manager.add_task(telegram_id, title, description, deadline, priority, status=False)
+            db_manager.add_task(telegram_id, title, description, deadline, priority, created_at, completed_at=None, status=False)
             await message.answer('✅ Задача успешно добавлена!')
             await state.clear()
         except Exception:
