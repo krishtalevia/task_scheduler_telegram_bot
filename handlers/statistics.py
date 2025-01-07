@@ -56,7 +56,9 @@ def show_complete_statistics(tasks, period=None):
             expired_tasks += 1
 
     statistics = [
-        f'✅ Завершённые задачи: {completed_tasks}'
-        f'🔄 В процессе выполнения: {tasks_in_progress}'
-        f'❌ Просроченные задачи: {expired_tasks}'
+        f'✅ Завершённые задачи: {completed_tasks}',
+        f'🔄 В процессе выполнения: {tasks_in_progress}',
+        f'❌ Просроченные задачи: {expired_tasks}',
     ]
+
+    return '\n'.join(statistics)
