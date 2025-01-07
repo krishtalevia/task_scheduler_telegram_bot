@@ -25,3 +25,26 @@ async def statistics_handler(message: types.Message, command: CommandObject):
 
     if not args:
         pass
+
+def show_statistics(tasks, period=None):
+    if not tasks:
+        return '❌ Задачи не найдены.'
+    
+    current_time_no_ms = datetime.datetime.now().replace(microsecond=0)
+    
+    completed_tasks = 0
+    tasks_in_progress = 0
+    expired_tasks = 0
+
+    if not period:
+        for task in tasks:
+            created_time = datetime.strptime(task[7], '%Y-%m-%d %H:%M:%S')
+            deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S')
+            completed_time = datetime.strptime(task[8], '%Y-%m-%d %H:%M:%S')
+            
+            if task[6] == 1:
+                completed_tasks += 1
+            if task[6] == 0:
+                tasks_in_progress += 1
+            if task[6] == 0 and current_time_no_ms > deadline:
+                expired_tasks += 1
