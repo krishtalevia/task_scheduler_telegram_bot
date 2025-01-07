@@ -16,7 +16,7 @@ class AddingTaskStates(StatesGroup):
     AddingPriority = State()
     TaskAddingConfirmation = State()
 
-@router.message(Command('add_task'))
+@router.message(StateFilter(None), Command('add_task'))
 async def add_task_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
 
