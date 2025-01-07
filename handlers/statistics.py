@@ -23,8 +23,27 @@ async def statistics_handler(message: types.Message, command: CommandObject):
     
     tasks = db_manager.get_tasks(telegram_id)
 
-    if not args:
-        pass
+    period = None
+    if args:
+        args = args.lower()
+        if args == 'день':
+            start_date = datetime.now() - timedelta(days=1)
+            end_date = datetime.now()
+            period = (start_date, end_date)
+        elif args == 'неделя':
+            start_date = datetime.now() - timedelta(days=7)
+            end_date = datetime.now()
+            period = (start_date, end_date)
+        elif args == 'месяц':
+            start_date = datetime.now() - timedelta(days=30)
+            end_date = datetime.now()
+            period = (start_date, end_date)
+        else:
+            await message.answer('⚠️ Неверный формат периода. Введите "день", "неделя" или "месяц".')
+            return
+    
+    statistics = show_statistics(tasks, period=period)
+    await message.answer(statistics)
 
 def show_statistics(tasks, period=None):
     if not tasks:
