@@ -14,12 +14,12 @@ async def main():
     dp.include_routers(auth.router)
     dp.include_routers(add_task.router)
     dp.include_routers(view_tasks.router)
-    dp.include_router(edit_task.router)
-    dp.include_router(complete_task.router)
-    dp.include_router(delete_task.router)
-    dp.include_router(reminders.router)
+    dp.include_routers(edit_task.router)
+    dp.include_routers(complete_task.router)
+    dp.include_routers(delete_task.router)
+    dp.include_routers(reminders.router)
 
-    reminder_task = asyncio.create_task(reminder_schedule(dp))
+    reminder_task = asyncio.create_task(reminder_schedule(bot))
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
