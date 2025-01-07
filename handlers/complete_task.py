@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter, Command
@@ -21,6 +23,7 @@ async def completing_handler(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
     task_id = message.text
     task = db_manager.get_task_by_id(telegram_id, task_id)
+    completed_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     if task:
         if task[6] == 1:
@@ -28,7 +31,8 @@ async def completing_handler(message: types.Message, state: FSMContext):
 
         elif task[6] == 0:
             if db_manager.update_task(telegram_id, task_id, parameter_name='status', new_value=True):
-                await message.answer(f'🎉 Задача с ID {task_id} теперь выполнена.')
+                if db_manager.update_task(telegram_id, task_id, parameter_name='completed_at', new_value=completed_at):
+                    await message.answer(f'🎉 Задача с ID {task_id} теперь выполнена.')
             else:
                 await message.answer('⚠️ При выполнении операции произошла ошибка.')
     else:
