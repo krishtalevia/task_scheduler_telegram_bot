@@ -15,8 +15,10 @@ async def register_handler(message: types.Message):
             await message.answer('✅ Вы успешно зарегистрировались. Для авторизации используйте /login')
         else:
            await message.answer('❌ Во время регистрации произошла ошибка.')
+           raise Exception('Ошибка в процессе регистрации!')
     else:
         await message.answer('⚠️ Вы уже зарегистрированы. Используйте /login для авторизации')
+        raise ValueError('Пользователь уже существует!')
 
 @router.message(StateFilter(None), Command('login'))
 async def login_handler(message: types.Message):
