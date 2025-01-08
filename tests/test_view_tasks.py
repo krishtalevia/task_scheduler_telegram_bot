@@ -27,3 +27,18 @@ def test_user(test_db):
     test_db.authorize_user(telegram_id)
     yield telegram_id
     test_db.delete_user(telegram_id)
+
+def test_view_tasks_for_today(test_db, test_user):
+    telegram_id = test_user
+    title = 'Тестовая задача на сегодня'
+    description = 'Тестовое описание'
+    deadline = datetime.datetime.now().replace(microsecond=0)
+    priority = 'Высокий'
+    created_at = datetime.datetime.now().replace(microsecond=0).strftime('%Y-%m-%d %H:%M:%S')
+
+    test_db.add_task(telegram_id, title, description, deadline, priority, created_at)
+
+    tasks = test_db.get_tasks(telegram_id)
+    filtered_tasks = filter_tasks_by_deadline(tasks, 'сегодня')
+
+    assert filtered_tasks is not None
