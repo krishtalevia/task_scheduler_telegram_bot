@@ -44,8 +44,10 @@ def test_edit_task_deadline(test_db, test_user):
     new_deadline = datetime.datetime.strptime('2025-01-10 18:00:00', '%Y-%m-%d %H:%M:%S')
 
     test_db.add_task(telegram_id, title, description, deadline, priority, created_at)
+    tasks = test_db.get_tasks(telegram_id)
+    task_id = tasks[0][0]
 
-    test_db.update_task(telegram_id, 2, 'deadline', new_deadline)
+    test_db.update_task(telegram_id, task_id, 'deadline', new_deadline)
 
     tasks = test_db.get_tasks(telegram_id)
     assert tasks[0][4] == '2025-01-10 18:00:00'
@@ -61,10 +63,12 @@ def test_edit_task_priority(test_db, test_user):
 
     test_db.add_task(telegram_id, title, description, deadline, priority, created_at)
 
-    test_db.update_task(telegram_id, 3, 'priority', new_priority)
+    tasks = test_db.get_tasks(telegram_id)
+    task_id = tasks[0][0]
+    test_db.update_task(telegram_id, task_id, 'priority', new_priority)
 
-    task = test_db.get_task_by_id(telegram_id, 3)
-    assert task[5] == new_priority
+    tasks = test_db.get_tasks(telegram_id)
+    assert tasks[0][5] == new_priority
 
 def test_delete_task(test_db, test_user):
     telegram_id = test_user
@@ -76,9 +80,29 @@ def test_delete_task(test_db, test_user):
 
     test_db.add_task(telegram_id, title, description, deadline, priority, created_at)
 
-    task = test_db.get_task_by_id(telegram_id, 4)
-    assert task is not None
+    tasks = test_db.get_tasks(telegram_id)
+    assert tasks[0] is not None
+    
+    task_id = tasks[0][0]
+    test_db.delete_task(telegram_id, task_id)
 
-    test_db.delete_task(telegram_id, 4)
-    task = test_db.get_task_by_id(telegram_id, 4)
+    task = test_db.get_task_by_id(telegram_id, task_id)
     assert task is None
+
+def test_complete_task(test_db, test_user):
+    telegram_id = test_user
+    title = 'Тестовая задача'
+    description = 'Тестовое описание'
+    deadline = datetime.datetime.now() + datetime.timedelta(hours=1)
+    priority = 'Высокий'
+    created_at = datetime.datetime.now()
+
+    test_db.add_task(telegram_id, title, description, deadline, priority, created_at)
+    tasks = test_db.get_tasks(telegram_id)
+
+    assert tasks[0][6] == 0
+
+    task_id = tasks[0][0]
+    test_db.update_task(telegram_id, task_id, 'status', True)
+    task = test_db.get_task_by_id(telegram_id, task_id)
+    assert task[6] == 1
