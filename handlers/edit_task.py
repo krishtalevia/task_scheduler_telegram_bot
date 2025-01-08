@@ -17,7 +17,7 @@ class EditTaskStates(StatesGroup):
 
 @router.message(Command('edit_task'))
 async def edit_task_handler(message: types.Message, state: FSMContext):
-    await message.answer('Введите ID задачи, которую хотите изменить:')
+    await message.answer('🆔 Введите ID задачи, которую хотите изменить:')
     await state.set_state(EditTaskStates.ChoosingParameter)
 
 @router.message(StateFilter(EditTaskStates.ChoosingParameter))
