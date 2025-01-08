@@ -136,7 +136,10 @@ def filter_tasks_by_deadline(tasks, deadline_type):
 
     if deadline_type == 'сегодня':
         for task in tasks:
-            task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
+            try: 
+                task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S.%f').date()
+            except ValueError:
+                task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
             if task_deadline == today:
                 filtered_tasks.append(task)
             
@@ -144,7 +147,10 @@ def filter_tasks_by_deadline(tasks, deadline_type):
         week_ahead = today + timedelta(days=7)
 
         for task in tasks:
-            task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
+            try: 
+                task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S.%f').date()
+            except ValueError:
+                task_deadline = datetime.strptime(task[4], '%Y-%m-%d %H:%M:%S').date()
             if today <= task_deadline <= week_ahead:
                 filtered_tasks.append(task)
 
