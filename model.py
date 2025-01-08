@@ -31,39 +31,6 @@ def init_db():
 if __name__ == '__main__':
     init_db()
 
-class Task:
-    def __init__(self, user_id, title, description, deadline, priority, status):
-        self._user_id = user_id
-        self._title = title
-        self._description = description
-        self._deadline = deadline
-        self._priority = priority
-        self._status = status
-
-    @property
-    def user_id(self):
-        return self._user_id
-    
-    @property
-    def title(self):
-        return self._title
-    
-    @property
-    def description(self):
-        return self._description
-    
-    @property
-    def deadline(self):
-        return self._deadline
-    
-    @property
-    def priority(self):
-        return self._priority
-    
-    def __str__(self):
-        task_info = f'Задача "{self._title}": {self._description} (приоритет: {self._priority}, выполнить до: {self._deadline}).'
-        return task_info
-
 class DatabaseManager:
     def __init__(self, db_name='database.db'):
         self.connection = sqlite3.connect(db_name)
