@@ -63,7 +63,7 @@ async def view_tasks_handler(message: types.Message, command: CommandObject):
                 else:
                     await message.answer('Нет задач на заданный период.')
             else:
-                await message.answer('Неверный формат периода. (Пример: /view_tasks период 2025-01-01 2025-02-01)')
+                await message.answer('Неверный формат периода. (Пример: /view_tasks период=2025-01-01 2025-02-01)')
 
     elif 'статус' in args:
         if '=' in args:
@@ -93,8 +93,8 @@ def sort_tasks_by_priority(tasks):
 def sort_tasks_by_deadline(tasks):
     for i in range(len(tasks)):
         for j in range(0, len(tasks) - i - 1):
-            date_a = datetime.strptime(tasks[j][4], '%Y-%m-%d')
-            date_b = datetime.strptime(tasks[j + 1][4], '%Y-%m-%d')
+            date_a = datetime.strptime(tasks[j][4], '%Y-%m-%d %H:%M:%S')
+            date_b = datetime.strptime(tasks[j + 1][4], '%Y-%m-%d %H:%M:%S')
 
             if date_a > date_b:
                 tasks[j], tasks[j + 1] = tasks[j + 1], tasks[j]
@@ -102,14 +102,9 @@ def sort_tasks_by_deadline(tasks):
     return tasks
 
 def sort_tasks_by_status(tasks):
-    status_order = {'выполнена': 1, 'не выполнена': 2}
-
     for i in range(len(tasks)):
         for j in range(0, len(tasks) - i - 1):
-            task_a = status_order[tasks[j][6].lower()]
-            task_b = status_order[tasks[j + 1][6].lower()]
-
-            if task_a > task_b:
+            if tasks[j][6] > tasks[j + 1][6]:
                 tasks[j], tasks[j + 1] = tasks[j +1], tasks[j]
     
     return tasks
