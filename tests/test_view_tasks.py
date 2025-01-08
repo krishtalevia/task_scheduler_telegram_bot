@@ -58,3 +58,17 @@ def test_filter_tasks_by_priority(test_db, test_user):
     filtered_tasks = filter_tasks_by_priority(tasks, 'Высокий')
 
     assert filtered_tasks is not None
+
+def test_filter_tasks_by_keyword(test_db, test_user):
+    telegram_id = test_user
+    title = 'Тестовая задача с ключевым словом'
+    description = 'Тестовое описание'
+    deadline = datetime.datetime.now().replace(microsecond=0)
+    priority = 'Низкий'
+    created_at = datetime.datetime.now().replace(microsecond=0).strftime('%Y-%m-%d %H:%M:%S')
+
+    test_db.add_task(telegram_id, title, description, deadline, priority, created_at)
+
+    tasks = test_db.get_tasks_by_keyword(telegram_id, 'словом')
+
+    assert tasks is not None
