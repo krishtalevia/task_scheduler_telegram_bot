@@ -5,10 +5,13 @@ from aiogram import Bot, Dispatcher
 from config import TOKEN
 from handlers import start, add_task, auth, view_tasks, edit_task, complete_task, delete_task, reminders, statistics, help
 from reminder_scheduler import reminder_schedule
+from model import init_db
 
 async def main():
     bot = Bot(token=TOKEN) 
     dp = Dispatcher()
+
+    init_db()
 
     dp.include_routers(start.router)
     dp.include_routers(auth.router)
