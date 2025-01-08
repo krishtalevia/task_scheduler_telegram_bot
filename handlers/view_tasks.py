@@ -77,6 +77,17 @@ async def view_tasks_handler(message: types.Message, command: CommandObject):
         else:
             sorted_tasks = sort_tasks_by_status(tasks)
             await message.answer(show_tasks(sorted_tasks))
+    
+    elif 'поиск' in args:
+        if '=' in args:
+            keyword = args.split('=')[1].strip()
+            filtered_tasks = db_manager.get_tasks_by_keyword(telegram_id, keyword)
+            if filtered_tasks:
+                await message.answer(show_tasks(filtered_tasks))
+            else:
+                await message.answer(f'Нет задач содержащих слово "{keyword}".')
+        else:
+            await message.answer('Некорректный ввод. (Пример /view_tasks поиск=купить)')
 
 def sort_tasks_by_priority(tasks):
     priority_order = {'высокий': 1, 'средний': 2, 'низкий': 3}
