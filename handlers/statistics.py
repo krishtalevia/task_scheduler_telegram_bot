@@ -59,7 +59,6 @@ def show_statistics(tasks, period=None):
     total_time = timedelta()
 
     for task in tasks:
-        print(task[7], task[8], task[4])
         created_time = datetime.strptime(str(task[7]), '%Y-%m-%d %H:%M:%S')
         deadline = datetime.strptime(str(task[4]), '%Y-%m-%d %H:%M:%S')
         if task[8] is not None:
