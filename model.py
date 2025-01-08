@@ -140,6 +140,11 @@ class DatabaseManager:
         self.cursor.execute('SELECT * FROM tasks WHERE user_id = ? AND id = ?', (user_id, task_id,))
         return self.cursor.fetchone()
     
+    def get_tasks_by_keyword(self, user_id, keyword):
+        keyword = f'%{keyword}%'
+        self.cursor.execute('SELECT * FROM tasks WHERE user_id = ? AND (title LIKE ? OR description LIKE ?)', (user_id, keyword, keyword))
+        return self.cursor.fetchall()
+    
     def update_task(self, user_id, task_id, parameter_name, new_value):
         self.cursor.execute(f'UPDATE tasks SET {parameter_name} = ? WHERE user_id = ? AND id = ?', (new_value, user_id, task_id))
         self.connection.commit()
