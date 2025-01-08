@@ -23,6 +23,9 @@ async def reminder_schedule(bot):
                 tasks_to_remind = cursor.fetchall()
 
             for title, deadline, telegram_id, reminder_time in tasks_to_remind:
+                if reminder_time == 0:
+                    continue
+
                 deadline = datetime.datetime.strptime(deadline, '%Y-%m-%d %H:%M:%S')
                 time_left = deadline - current_time_no_ms
 
