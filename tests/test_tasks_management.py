@@ -49,3 +49,19 @@ def test_edit_task_deadline(test_db, test_user):
 
     task = test_db.get_task_by_id(telegram_id, 1)
     assert task[4] == '2025-01-10 18:00:00'
+
+def test_edit_task_priority(test_db, test_user):
+    telegram_id = test_user
+    title = 'Тестовая задача'
+    description = 'Тестовое описание'
+    deadline = datetime.datetime.now() + datetime.timedelta(hours=1)
+    priority = 'Высокий'
+    created_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    new_priority = 'Средний'
+
+    test_db.add_task(telegram_id, title, description, deadline, priority, created_at)
+
+    test_db.update_task(telegram_id, 1, 'priority', new_priority)
+
+    task = test_db.get_task_by_id(telegram_id, 1)
+    assert task[5] == 'Средний'
