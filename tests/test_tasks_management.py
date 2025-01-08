@@ -14,3 +14,17 @@ def db_manager():
     init_db()
     yield db_manager
     db_manager.close()
+
+@pytest.fixture
+def fsm_context():
+    return FSMContext()
+
+@pytest.fixture
+def message():
+    return types.Message()
+
+@pytest.fixture
+def register_user(db_manager):
+    telegram_id = 123
+    db_manager.register_user(telegram_id)
+    return telegram_id
