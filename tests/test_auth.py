@@ -1,9 +1,6 @@
 import pytest
-from aiogram import types
-from aiogram.types import Message
 
 from model import DatabaseManager, init_db
-from handlers import auth
 
 @pytest.fixture
 def db_manager():
