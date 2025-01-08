@@ -71,7 +71,7 @@ class DatabaseManager:
 
     def register_user(self, telegram_id):
         if self.get_user(telegram_id):
-            raise ValueError('Пользователь уже существует.')
+            raise ValueError('Пользователь уже существует!')
         self.cursor.execute('INSERT INTO users (telegram_id) VALUES (?)', (telegram_id,))
         self.connection.commit()
         return True
@@ -114,6 +114,11 @@ class DatabaseManager:
         else:
             raise ValueError('Пользователь не авторизован.')
             return False
+        
+    def delete_user(self, telegram_id):
+        self.cursor.execute('DELETE FROM users WHERE telegram_id = ?', (telegram_id,))
+        self.connection.commit()
+        return True
 
     def add_task(self, user_id, title, description, deadline, priority, created_at, completed_at=None, status=False):
         self.cursor.execute('''
