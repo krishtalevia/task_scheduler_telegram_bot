@@ -21,9 +21,7 @@ async def reminders_handler(message: types.Message, state: FSMContext):
         "2️⃣ За 2 часа\n"
         "3️⃣ За 1 день\n"
     )
-    telegram_id = message.from_user.id
-    user = db_manager.get_user(telegram_id)
-    await message.answer(f'Сейчас установлено: {user[3]}')
+    
     await state.set_state(ReminderStates.ChooseReminderTime)
 
 @router.message(StateFilter(ReminderStates.ChooseReminderTime))
