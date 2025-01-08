@@ -67,7 +67,7 @@ async def view_tasks_handler(message: types.Message, command: CommandObject):
 
     elif 'статус' in args:
         if '=' in args:
-            status = args.split('=').strip()
+            status = args.split('=')[1].strip()
             filtered_tasks = filter_tasks_by_status(tasks, status)
             if filtered_tasks:
                 await message.answer(show_tasks(filtered_tasks))
@@ -152,10 +152,16 @@ def filter_tasks_by_custom_period(tasks, start_date, end_date):
     return filtered_tasks
 
 def filter_tasks_by_status(tasks, status):
+    status_dict = {
+        'выполнена': 1,
+        'не выполнена': 0, 
+    }
+    
+    status = status_dict.get(status.lower())
     filtered_tasks = []
 
     for task in tasks:
-        if task['status'].lower() == status.lower():
+        if task[6] == status:
             filtered_tasks.append(task)
 
     return filtered_tasks
