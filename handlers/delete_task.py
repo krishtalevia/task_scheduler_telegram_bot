@@ -13,7 +13,7 @@ class DeleteTaskStates(StatesGroup):
 
 @router.message(StateFilter(None), Command('delete_task'))
 async def delete_task_handler(message: types.Message, state: FSMContext):
-    await message.answer('Введите ID задачи, которую требуется удалить:')
+    await message.answer('🆔 Введите ID задачи, которую требуется удалить:')
     await state.set_state(DeleteTaskStates.Deleting)
 
 @router.message(StateFilter(DeleteTaskStates.Deleting))
