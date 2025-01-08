@@ -15,7 +15,7 @@ class CompleteTaskStates(StatesGroup):
 
 @router.message(StateFilter(None), Command('complete_task'))
 async def complete_task_handler(message: types.Message, state: FSMContext):
-    await message.answer('Введите ID задачи, которую требуется пометить как выполненную:')
+    await message.answer('🆔 Введите ID задачи, которую требуется пометить как выполненную:')
     await state.set_state(CompleteTaskStates.Completing)
 
 @router.message(StateFilter(CompleteTaskStates.Completing))
