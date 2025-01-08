@@ -119,6 +119,11 @@ class DatabaseManager:
         self.cursor.execute('DELETE FROM users WHERE telegram_id = ?', (telegram_id,))
         self.connection.commit()
         return True
+    
+    def delete_all_users(self):
+        self.cursor.execute('DELETE FROM users')
+        self.connection.commit()
+        return True
 
     def add_task(self, user_id, title, description, deadline, priority, created_at, completed_at=None, status=False):
         self.cursor.execute('''
